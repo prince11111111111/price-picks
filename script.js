@@ -1,10 +1,273 @@
 let search_btn = document.querySelector("#search_btn");
+let search_sec = document.querySelector("#search_sec");
 let header = document.querySelector("header");
 let results = document.querySelector("#results");
+let heading = document.querySelector("h1");
+let watchList = document.querySelector("#watchlist_sec");
+let watchList_btn = document.querySelector("#watchlist_btn");
+let my_flights = document.querySelector("#my_flights");
+let back_btn = document.querySelector("#back_btn");
+let add_btn = null;
+let edit_btn = null;
+let pick_close_btn = null;
+let edit_close_btn = null;
+let curr_idx = null;
+let prev_view = null;
+let curr_price = null;
+let picked_price = null;
+let curr_view = "home";
 
-const homeToResults = () => {
-    header.classList.add("searching");
-    results.classList.remove("hidden");
+let flights = [
+    {
+        airline : "IndiGo",
+        departure_time: "10:30",
+        departure_airport: "BHO",
+        length: "1Hr30min",
+        type: "direct",
+        arrival_time: "12:00",
+        arrival_airport: "PNQ",
+        lowest_price: 4753
+    },
+     {
+        airline : "AirIndia",
+        departure_time: "15:10",
+        departure_airport: "DEL",
+        length: "3Hr30min",
+        type: "1stop",
+        arrival_time: "18:40",
+        arrival_airport: "BHO",
+        lowest_price: 7215
+    }
+];
+
+let flights_ToSave = null;
+
+let saved_Flights = [{
+        airline : "IndiGo",
+        departure_time: "10:30",
+        departure_airport: "BHO",
+        length: "1Hr30min",
+        type: "direct",
+        arrival_time: "12:00",
+        arrival_airport: "PNQ",
+        lowest_price: 4753,
+        picked_price: 4000
+    }
+];
+
+const formatResult = (ele,i) =>{
+    let data = flights[i];
+    let html = `<img src="${data.airline}" alt="Airline" class="airline_logo">
+
+            <div class="departure">
+                <p class="departure_time">${data.departure_time}</p>
+                <p class="departure_airport">${data.departure_airport}</p>
+            </div>
+
+            <div class="inbetween">
+                <p class="flight_length">${data.length}</p>
+                <img src="arrow_icon.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
+                <p class="flight_type"> ${data.type}</p>
+            </div>
+
+            <div class="arrival">
+                <p class="arrival_time">${data.arrival_time}</p>
+                <p class="arrival_airport">${data.arrival_airport}</p>
+            </div>
+
+            <div class="price">
+
+                <p class="lowest_price">Rs.${data.lowest_price}</p>
+
+                <button class="pick_btn">Pick</button>
+            </div>`;
+    ele.innerHTML = html;
 };
 
+const createResults = () =>{
+    results.innerHTML =`<div id="pick_price" class="hidden">
+            <div id="results_current_price">
+            </div>
+            
+            <div id="results_your_price">
+                <label for="picked_price">Pick Your Price</label>
+                <input type="number" placeholder="Pick Price" id="picked_price">
+            </div>
+            <button id="pick_flight">Pick</button>
+
+            <button class="close" id="pick_close"><img src="" alt="Close" id="cross_icon"></button>
+        </div>`;
+    pick_close_btn = document.querySelector("#pick_close");
+    pick_close_btn.addEventListener("click",()=>{
+        let pick_sec = document.querySelector("#pick_price");
+            pick_sec.classList.add("hidden");
+    })   
+    add_btn = document.querySelector("#pick_flight");
+    add_btn.addEventListener("click",()=>{
+        let desired_price = parseInt(document.querySelector("#picked_price").value);
+        flights_ToSave.picked_price = desired_price;
+        saved_Flights.push(flights_ToSave);
+    })
+    for(let i=0;i<flights.length;i++){
+        let result = document.createElement("div");
+        result.classList.add("result");
+        formatResult(result,i);
+        result.addEventListener("click",(ele)=>{
+            let pick_sec = document.querySelector("#pick_price");
+            pick_sec.classList.remove("hidden");
+            pick_sec.classList.add("pick");
+            curr_price = flights[i].lowest_price;
+            flights_ToSave = flights[i];
+            let parent = document.querySelector("#results_current_price");
+            let html = `<p>Current Lowest Price<p>
+            <p id="results_current_lowest_price">${curr_price}</p>`;
+            parent.innerHTML = html;
+        });
+        results.appendChild(result);
+    }
+};
+
+const formatMyFlight = (ele,i) =>{
+    let data = saved_Flights[i];
+    let html = `<img src="${data.airline}" alt="Airline" class="airline_logo">
+
+            <div class="departure">
+                <p class="departure_time">${data.departure_time}</p>
+                <p class="departure_airport">${data.departure_airport}</p>
+            </div>
+
+            <div class="inbetween">
+                <p class="flight_length">${data.length}</p>
+                <img src="arrow_icon.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
+                <p class="flight_type"> ${data.type}</p>
+            </div>
+
+            <div class="arrival">
+                <p class="arrival_time">${data.arrival_time}</p>
+                <p class="arrival_airport">${data.arrival_airport}</p>
+            </div>
+
+            <div class="edit_sec">
+
+                <div class="price">
+                    <p class="lowest_price">Current Price:Rs.${data.lowest_price}</p>
+
+                    <p class="picked_price">Picked Price: Rs.${data.picked_price}</p>
+                </div>
+
+                <button class="edit_btns">Edit</button>
+            </div>`;
+    ele.innerHTML = html;
+};
+
+const createWatchlist = () => {
+    my_flights.innerHTML =`<div id="edit" class="hidden">
+
+            <div class="prices">
+
+                <div id="watchlist_current_price">
+                </div>
+            
+                <div id="watchlist_your_price">
+                </div>
+
+                <div id="new_price">
+
+                    <label for="new_picked_price">Update Price</label>
+                    <input type="number" placeholder="Pick Price" id="new_picked_price">
+                </div>
+            </div>
+
+            <div id="edit_btns">
+
+                <button id="edit_btn">Edit</button>
+
+                <button id="delete_btn">Delete</button>
+            </div>
+
+            <button class="close" id="edit_close"><img src="" alt="Close" id="cross_icon"></button>
+        </div>`;
+    edit_close_btn = document.querySelector("#edit_close");
+    edit_close_btn.addEventListener("click",()=>{
+        let edit = document.querySelector("#edit");
+        edit.classList.add("hidden");
+    })  
+    edit_btn = document.querySelector("#edit_btn");
+    edit_btn.addEventListener("click",()=>{
+        let new_picked_price = document.querySelector("#new_picked_price");
+        saved_Flights[curr_idx].picked_price = new_picked_price.value;
+        createWatchlist();
+        document.querySelector("#edit").classList.add("hidden");
+    })
+    delete_btn = document.querySelector("#delete_btn");
+    delete_btn.addEventListener("click",()=>{
+        saved_Flights.splice(curr_idx,1);
+        createWatchlist();
+        document.querySelector("#edit").classList.add("hidden");
+    })
+    for(let i=0;i<saved_Flights.length;i++){
+        let my_flight = document.createElement("div");
+        my_flight.classList.add("myFlight");
+        formatMyFlight(my_flight,i);
+        my_flight.addEventListener("click",(ele)=>{
+            let edit = document.querySelector("#edit");
+            edit.classList.remove("hidden");
+            edit.classList.add("edit");
+            curr_idx = i;
+            curr_price = saved_Flights[i].lowest_price;
+            let parent = document.querySelector("#watchlist_current_price");
+            let html = `<p>Current Lowest Price<p>
+                        <p id="watchlist_current_lowest_price">Rs.${curr_price}</p>`;
+            parent.innerHTML = html;
+            picked_price = saved_Flights[i].picked_price;
+            parent = document.querySelector("#watchlist_your_price");
+            html = `<p >Your Picked Price</p>
+            <p id="curr_picked_price">Rs.${picked_price}</p>`;
+            parent.innerHTML = html;
+        });
+        my_flights.appendChild(my_flight);
+    }
+}
+
+const homeToResults = () => {
+    watchList.classList.add("hidden");
+    header.classList.remove("hidden");
+    header.classList.add("searching");
+    results.classList.remove("hidden");
+    prev_view = curr_view;
+    curr_view = "results";
+};
+
+const toHome = () => {
+    header.classList.remove("hidden");
+    header.classList.remove("searching");
+    results.classList.add("hidden");
+    watchList.classList.add("hidden");
+    prev_view = curr_view;
+    curr_view = "home";
+};
+
+const toWatchlist =() => {
+    watchList.classList.remove("hidden");
+    results.classList.add("hidden");
+    header.classList.remove("searching");
+    header.classList.add("hidden");
+    prev_view = curr_view;
+    curr_view = "watchlist";
+};
+
+const back = () =>{
+    switch(prev_view){
+        case "home": toHome();
+                    break;
+        case "results": homeToResults();
+                        break;
+    };
+}
+
+watchList_btn.addEventListener("click",toWatchlist);
+watchList_btn.addEventListener("click",createWatchlist);
+search_btn.addEventListener("click",createResults);
 search_btn.addEventListener("click",homeToResults);
+heading.addEventListener("click",toHome);
+back_btn.addEventListener("click",back);

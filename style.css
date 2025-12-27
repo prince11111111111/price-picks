@@ -123,7 +123,26 @@ header.searching #flight_details{
     border-radius: 15px;
     width:50%;
 }
-
+#watchlist_header{
+    display: flex;
+    justify-content: space-between;
+    font-size: larger;
+}
+#my_flights{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.myFlight{
+    display: flex;
+    justify-content: space-between;
+    background-color: #A6B8FF;
+    margin-top: 4vh;
+    border-radius: 15px;
+    width:50%;
+}
 .airline_logo{
     width: 100px;
 }
@@ -161,11 +180,163 @@ header.searching #flight_details{
     padding: 1rem;
     margin-left: 2rem;
 }
-.pick{
+.edit_sec{
+    display: flex;
+    flex-direction: column;
+}
+.pick_btn{
     border-radius: 15px;
     font-size: 1.5rem;
     border: 0;
 }
+.edit_btns{
+    border-radius: 15px;
+    font-size: 1.5rem;
+    border: 0;
+}
+.pick{
+    width: 50%;
+    height: 20vh;
+    display:flex;
+    border-radius: 15px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #7692FF;
+    font-size: 1.5rem;
+    font-weight: bolder;
+}
+#current_price{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    height: 100%;
+    width: 33%;
+}
+#your_price{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    height: 100%;
+    width: 33%;
+}
+#your_price input {
+    font-size: 1.3rem;
+    padding: 5px;
+    border-radius: 15px;
+    border: none;
+    width: 100%;
+}
+#pick_flight{
+    border-radius: 15px;
+    background-color: white;
+    font-size: 1.5rem;
+    width: 33%;
+    height: 50px;
+}
+.edit{
+    width: 60%;
+    height: 30vh;
+    display:flex;
+    flex-direction: column;
+    border-radius: 15px;
+    justify-content: space-between;
+    background-color: #7692FF;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bolder;
+}
+.prices{
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.5rem;
+    width: 100%;
+    
+}
+.prices #current_price{
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    justify-content: center;
+    text-align: left;
+    height: 100%;
+    width: 30%;
+}
+.prices #your_price{
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    justify-content: center;
+    text-align: left;
+    height: 100%;
+    width: 30%;
+}
+#new_price{
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    justify-content: center;
+    text-align: left;
+    height: 100%;
+    width: 30%;
+}
+#new_price input {
+    align-items:flex-start;
+    padding: 20px;
+    border-radius: 15px;
+    border: none;
+    width: 100%;
+}
+#edit_btns{
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.5rem;
+    width: 100%;
+    height: 100px;
+}
+#edit_btn{
+    height: 50px;
+    width: 40%;
+    border-radius: 15px;
+    border: 0;
+    margin:2vh;
+    font-size: 1rem;
+}
+#delete_btn{
+    height: 50px;
+    width: 40%;
+    border-radius: 15px;
+    border: 0;
+    margin:2vh;
+    font-size: 1rem;
+}
 .hidden{
     display: none;
+}
+#pick_price{
+    position:fixed;
+    top:40%;
+    left:25%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+#edit{
+    position:fixed;
+    top:30%;
+    left:20%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
 }
