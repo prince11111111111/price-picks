@@ -42,18 +42,7 @@ let flights = [
 
 let flights_ToSave = null;
 
-let saved_Flights = [{
-        airline : "IndiGo",
-        departure_time: "10:30",
-        departure_airport: "BHO",
-        length: "1Hr30min",
-        type: "direct",
-        arrival_time: "12:00",
-        arrival_airport: "PNQ",
-        lowest_price: 4753,
-        picked_price: 4000
-    }
-];
+let saved_Flights = JSON.parse(localStorage.getItem("my_flights")) || [];
 
 const formatResult = (ele,i) =>{
     let data = flights[i];
@@ -107,6 +96,8 @@ const createResults = () =>{
         let desired_price = parseInt(document.querySelector("#picked_price").value);
         flights_ToSave.picked_price = desired_price;
         saved_Flights.push(flights_ToSave);
+        localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
+        document.querySelector("#pick_price").classList.add("hidden");
     })
     for(let i=0;i<flights.length;i++){
         let result = document.createElement("div");
@@ -117,7 +108,7 @@ const createResults = () =>{
             pick_sec.classList.remove("hidden");
             pick_sec.classList.add("pick");
             curr_price = flights[i].lowest_price;
-            flights_ToSave = flights[i];
+            flights_ToSave = {...flights[i]};
             let parent = document.querySelector("#results_current_price");
             let html = `<p>Current Lowest Price<p>
             <p id="results_current_lowest_price">${curr_price}</p>`;
@@ -129,6 +120,7 @@ const createResults = () =>{
 
 const formatMyFlight = (ele,i) =>{
     let data = saved_Flights[i];
+    data.lowest_price<data.picked_price ? ele.classList.add("green") : ele.classList.add("red") ;
     let html = `<img src="${data.airline}" alt="Airline" class="airline_logo">
 
             <div class="departure">
@@ -195,15 +187,17 @@ const createWatchlist = () => {
     edit_btn = document.querySelector("#edit_btn");
     edit_btn.addEventListener("click",()=>{
         let new_picked_price = document.querySelector("#new_picked_price");
-        saved_Flights[curr_idx].picked_price = new_picked_price.value;
+        saved_Flights[curr_idx].picked_price = parseInt(new_picked_price.value);
         createWatchlist();
         document.querySelector("#edit").classList.add("hidden");
+        localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
     })
     delete_btn = document.querySelector("#delete_btn");
     delete_btn.addEventListener("click",()=>{
         saved_Flights.splice(curr_idx,1);
         createWatchlist();
         document.querySelector("#edit").classList.add("hidden");
+        localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
     })
     for(let i=0;i<saved_Flights.length;i++){
         let my_flight = document.createElement("div");
