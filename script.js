@@ -16,33 +16,22 @@ let prev_view = null;
 let curr_price = null;
 let picked_price = null;
 let curr_view = "home";
+let URL = `https://695236123b3c518fca11d4bb.mockapi.io/flightsapi/pp/flights`;
 
-let flights = [
-    {
-        airline : "IndiGo",
-        departure_time: "10:30",
-        departure_airport: "BHO",
-        length: "1Hr30min",
-        type: "direct",
-        arrival_time: "12:00",
-        arrival_airport: "PNQ",
-        lowest_price: 4753
-    },
-     {
-        airline : "AirIndia",
-        departure_time: "15:10",
-        departure_airport: "DEL",
-        length: "3Hr30min",
-        type: "1stop",
-        arrival_time: "18:40",
-        arrival_airport: "BHO",
-        lowest_price: 7215
-    }
-];
+let flights = [];
 
 let flights_ToSave = null;
 
 let saved_Flights = JSON.parse(localStorage.getItem("my_flights")) || [];
+
+const getFlights = async () => {
+    try{
+        flights = await (await fetch(URL)).json();
+        console.log("Data fetched");
+    }catch(error){
+        console.log(error);
+    }
+}
 
 const formatResult = (ele,i) =>{
     let data = flights[i];
@@ -73,7 +62,7 @@ const formatResult = (ele,i) =>{
     ele.innerHTML = html;
 };
 
-const createResults = () =>{
+const createResults = async () =>{
     results.innerHTML =`<div id="pick_price" class="hidden">
             <div id="results_current_price">
             </div>
@@ -99,6 +88,7 @@ const createResults = () =>{
         localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
         document.querySelector("#pick_price").classList.add("hidden");
     })
+    await getFlights();
     for(let i=0;i<flights.length;i++){
         let result = document.createElement("div");
         result.classList.add("result");
@@ -118,9 +108,18 @@ const createResults = () =>{
     }
 };
 
+const updatePrice = () => {
+    for(let i=0;i<saved_Flights.length;i++){
+        let Id = saved_Flights[i].id;
+        for(let j of flights){
+            if(j.id==Id) saved_Flights[i].lowest_price = j.lowest_price;
+        }
+    }
+}
+
 const formatMyFlight = (ele,i) =>{
     let data = saved_Flights[i];
-    data.lowest_price<data.picked_price ? ele.classList.add("green") : ele.classList.add("red") ;
+    data.lowest_price<=data.picked_price ? ele.classList.add("green") : ele.classList.add("red") ;
     let html = `<img src="${data.airline}" alt="Airline" class="airline_logo">
 
             <div class="departure">
@@ -152,7 +151,7 @@ const formatMyFlight = (ele,i) =>{
     ele.innerHTML = html;
 };
 
-const createWatchlist = () => {
+const createWatchlist = async () => {
     my_flights.innerHTML =`<div id="edit" class="hidden">
 
             <div class="prices">
@@ -199,6 +198,8 @@ const createWatchlist = () => {
         document.querySelector("#edit").classList.add("hidden");
         localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
     })
+    await getFlights();
+    updatePrice();
     for(let i=0;i<saved_Flights.length;i++){
         let my_flight = document.createElement("div");
         my_flight.classList.add("myFlight");
