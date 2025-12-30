@@ -25,13 +25,16 @@
                 <div id="from">
                     <label for="from_place">Origin City</label>
                     <br>
-                    <input type="text" id ="from_place" placeholder="Departure" required>
+
+                    <input type="text" id="from_place" list="airport_suggestions" placeholder="Departure" required>
+                    <datalist id ="airport_suggestions" placeholder="Departure" required></datalist>
                 </div>
 
                 <div id="to">
                     <label for="to_place">Destination City</label>
                     <br>
-                    <input type="text" id ="to_place" placeholder="Arrival" required>
+
+                    <input type="text" id="to_place" list="airport_suggestions" placeholder="Arrival" required>
                 </div>
                 
                 <div id="date">
@@ -56,7 +59,7 @@
             <img src="" alt="Back" id="back_btn">
 
             <h2>My Watchlist</h2>
-            
+
             <img src="" alt="Profile" class="profile">
         </div>
 
@@ -66,6 +69,6 @@
     </section>
 
 
-    <script src="script.js"></script>
+    <script type ="module" src="script.js"></script>
 </body>
 </html>

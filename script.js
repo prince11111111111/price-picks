@@ -1,5 +1,6 @@
+import { indianAirports } from './Airports.js';
+
 let search_btn = document.querySelector("#search_btn");
-let search_sec = document.querySelector("#search_sec");
 let header = document.querySelector("header");
 let results = document.querySelector("#results");
 let heading = document.querySelector("h1");
@@ -7,8 +8,13 @@ let watchList = document.querySelector("#watchlist_sec");
 let watchList_btn = document.querySelector("#watchlist_btn");
 let my_flights = document.querySelector("#my_flights");
 let back_btn = document.querySelector("#back_btn");
+let from_place = document.querySelector("#from_place");
+let to_place = document.querySelector("#to_place");
+let date = document.querySelector("#from_date");
+let datalist = document.querySelector("datalist");
 let add_btn = null;
 let edit_btn = null;
+let delete_btn = null;
 let pick_close_btn = null;
 let edit_close_btn = null;
 let curr_idx = null;
@@ -17,6 +23,15 @@ let curr_price = null;
 let picked_price = null;
 let curr_view = "home";
 let URL = `https://695236123b3c518fca11d4bb.mockapi.io/flightsapi/pp/flights`;
+
+
+(async () =>{
+    datalist.innerHTML = "";
+    for(let i of indianAirports){
+        let html = `<option value="${Object.values(i)[0]}">${Object.keys(i)[0]}</option>`;
+        datalist.innerHTML += html;
+    }
+})();
 
 let flights = [];
 
@@ -90,21 +105,25 @@ const createResults = async () =>{
     })
     await getFlights();
     for(let i=0;i<flights.length;i++){
-        let result = document.createElement("div");
-        result.classList.add("result");
-        formatResult(result,i);
-        result.addEventListener("click",(ele)=>{
-            let pick_sec = document.querySelector("#pick_price");
-            pick_sec.classList.remove("hidden");
-            pick_sec.classList.add("pick");
-            curr_price = flights[i].lowest_price;
-            flights_ToSave = {...flights[i]};
-            let parent = document.querySelector("#results_current_price");
-            let html = `<p>Current Lowest Price<p>
-            <p id="results_current_lowest_price">${curr_price}</p>`;
-            parent.innerHTML = html;
-        });
-        results.appendChild(result);
+        if(flights[i].departure_airport == from_place.value && 
+            flights[i].arrival_airport == to_place.value &&
+            flights[i].date == date.value){
+            let result = document.createElement("div");
+            result.classList.add("result");
+            formatResult(result,i);
+            result.addEventListener("click",(ele)=>{
+                let pick_sec = document.querySelector("#pick_price");
+                pick_sec.classList.remove("hidden");
+             pick_sec.classList.add("pick");
+                curr_price = flights[i].lowest_price;
+                flights_ToSave = {...flights[i]};
+                let parent = document.querySelector("#results_current_price");
+                let html = `<p>Current Lowest Price<p>
+                <p id="results_current_lowest_price">${curr_price}</p>`;
+                parent.innerHTML = html;
+            });
+            results.appendChild(result);
+        }
     }
 };
 
@@ -262,7 +281,10 @@ const back = () =>{
 
 watchList_btn.addEventListener("click",toWatchlist);
 watchList_btn.addEventListener("click",createWatchlist);
-search_btn.addEventListener("click",createResults);
+search_btn.addEventListener("click",()=>{
+    results.innerHTML = "";
+    createResults();
+});
 search_btn.addEventListener("click",homeToResults);
 heading.addEventListener("click",toHome);
 back_btn.addEventListener("click",back);
