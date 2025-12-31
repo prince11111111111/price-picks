@@ -12,6 +12,10 @@ let from_place = document.querySelector("#from_place");
 let to_place = document.querySelector("#to_place");
 let date = document.querySelector("#from_date");
 let datalist = document.querySelector("datalist");
+let no_results = document.querySelector("#no_results");
+let no_results_btn = document.querySelector("#no_results_btn");
+let no_watchlisted_flights = document.querySelector("#no_watchlisted_flights");
+let no_watchlisted_flights_btn = document.querySelector("#no_watchlisted_flights_btn");
 let add_btn = null;
 let edit_btn = null;
 let delete_btn = null;
@@ -48,6 +52,16 @@ const getFlights = async () => {
     }
 }
 
+const showNoResult = () => {
+    no_results.classList.remove("hidden");
+    no_results.classList.add("no_results");
+};
+
+const showNoWatchlist = () => {
+    no_watchlisted_flights.classList.remove("hidden");
+    no_watchlisted_flights.classList.add("no_results");
+};
+
 const formatResult = (ele,i) =>{
     let data = flights[i];
     let html = `<img src="${data.airline}" alt="Airline" class="airline_logo">
@@ -78,6 +92,11 @@ const formatResult = (ele,i) =>{
 };
 
 const createResults = async () =>{
+    let flag = true;
+    
+    await getFlights();
+
+    results.classList.remove("loading_state");
     results.innerHTML =`<div id="pick_price" class="hidden">
             <div id="results_current_price">
             </div>
@@ -103,11 +122,12 @@ const createResults = async () =>{
         localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
         document.querySelector("#pick_price").classList.add("hidden");
     })
-    await getFlights();
+
     for(let i=0;i<flights.length;i++){
-        if(flights[i].departure_airport == from_place.value && 
-            flights[i].arrival_airport == to_place.value &&
+        if(flights[i].departure_airport == from_place.value.trim().toUpperCase() && 
+            flights[i].arrival_airport == to_place.value.trim().toUpperCase() &&
             flights[i].date == date.value){
+            flag = false;
             let result = document.createElement("div");
             result.classList.add("result");
             formatResult(result,i);
@@ -125,6 +145,7 @@ const createResults = async () =>{
             results.appendChild(result);
         }
     }
+    if(flag || flights.length==0) showNoResult();
 };
 
 const updatePrice = () => {
@@ -217,6 +238,7 @@ const createWatchlist = async () => {
         document.querySelector("#edit").classList.add("hidden");
         localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
     })
+    if(saved_Flights.length==0) showNoWatchlist();
     await getFlights();
     updatePrice();
     for(let i=0;i<saved_Flights.length;i++){
@@ -248,6 +270,8 @@ const homeToResults = () => {
     header.classList.remove("hidden");
     header.classList.add("searching");
     results.classList.remove("hidden");
+    no_results.classList.remove("no_results");
+    no_results.classList.add("hidden");
     prev_view = curr_view;
     curr_view = "results";
 };
@@ -280,11 +304,21 @@ const back = () =>{
 }
 
 watchList_btn.addEventListener("click",toWatchlist);
-watchList_btn.addEventListener("click",createWatchlist);
-search_btn.addEventListener("click",()=>{
-    results.innerHTML = "";
-    createResults();
-});
 search_btn.addEventListener("click",homeToResults);
+search_btn.addEventListener("click",()=>{
+    results.classList.add("loading_state");
+    results.innerHTML = "";
+    results.innerText = "Getting Flights.....";
+    setTimeout(async () => {
+        await createResults();
+    }, 100);
+});
+no_results_btn.addEventListener("click",()=>{
+    no_results.classList.remove("no_results");
+    no_results.classList.add("hidden");
+})
+no_watchlisted_flights_btn.addEventListener("click",back);
+
+watchList_btn.addEventListener("click",createWatchlist);
 heading.addEventListener("click",toHome);
 back_btn.addEventListener("click",back);

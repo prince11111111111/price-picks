@@ -97,16 +97,21 @@ header.searching #flight_details{
     font-size: 2rem;
     font-weight: bolder;
 }
-.home_page{
-
-}
-.header{
-
-}
 #header{
     width: 100%;
     display: flex;
     justify-content: space-between;
+}
+.loading_state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    font-size: 3rem; 
+    font-weight: 800;
+    color: #091540;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 #results{
     display: flex;
@@ -351,4 +356,29 @@ header.searching #flight_details{
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
+}
+.no_results{
+    position: fixed;
+    top:37%;
+    left: 44.5%;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 1rem;
+    border-radius: 15px;
+    border-style: solid ;
+    border-width: 2px;
+    border-color: #091540;
+    background-color: #7692FF;
+}
+#no_results_btn, #no_watchlisted_flights_btn{
+    padding:2px;
+    height: 30px;
+    width: 60px;
+    font-size: 1.2rem;
+    border-radius: 15px;
+
 }
