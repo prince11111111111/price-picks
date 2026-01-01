@@ -73,7 +73,7 @@ const formatResult = (ele,i) =>{
 
             <div class="inbetween">
                 <p class="flight_length">${data.length}</p>
-                <img src="arrow_icon.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
+                <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
                 <p class="flight_type"> ${data.type}</p>
             </div>
 
@@ -107,7 +107,7 @@ const createResults = async () =>{
             </div>
             <button id="pick_flight">Pick</button>
 
-            <button class="close" id="pick_close"><img src="" alt="Close" id="cross_icon"></button>
+            <button class="close" id="pick_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
         </div>`;
     pick_close_btn = document.querySelector("#pick_close");
     pick_close_btn.addEventListener("click",()=>{
@@ -169,7 +169,7 @@ const formatMyFlight = (ele,i) =>{
 
             <div class="inbetween">
                 <p class="flight_length">${data.length}</p>
-                <img src="arrow_icon.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
+                <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
                 <p class="flight_type"> ${data.type}</p>
             </div>
 
@@ -216,7 +216,7 @@ const createWatchlist = async () => {
                 <button id="delete_btn">Delete</button>
             </div>
 
-            <button class="close" id="edit_close"><img src="" alt="Close" id="cross_icon"></button>
+            <button class="close" id="edit_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
         </div>`;
     edit_close_btn = document.querySelector("#edit_close");
     edit_close_btn.addEventListener("click",()=>{
@@ -281,6 +281,8 @@ const toHome = () => {
     header.classList.remove("searching");
     results.classList.add("hidden");
     watchList.classList.add("hidden");
+    no_results.classList.remove("no_results");
+    no_results.classList.add("hidden");
     prev_view = curr_view;
     curr_view = "home";
 };
