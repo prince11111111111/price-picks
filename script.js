@@ -1,4 +1,5 @@
 import { indianAirports } from './Airports.js';
+import { airlineMapping } from './Airlines.js';
 
 let search_btn = document.querySelector("#search_btn");
 let header = document.querySelector("header");
@@ -64,7 +65,7 @@ const showNoWatchlist = () => {
 
 const formatResult = (ele,i) =>{
     let data = flights[i];
-    let html = `<img src="${data.airline}" alt="Airline" class="airline_logo">
+    let html = `<img src=https://content.airhex.com/content/logos/airlines_${airlineMapping[data.airline]}_60_40_r.png" alt="Airline" class="airline_logo">
 
             <div class="departure">
                 <p class="departure_time">${data.departure_time}</p>
@@ -98,6 +99,7 @@ const createResults = async () =>{
 
     results.classList.remove("loading_state");
     results.innerHTML =`<div id="pick_price" class="hidden">
+            <button class="close" id="pick_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
             <div id="results_current_price">
             </div>
             
@@ -107,7 +109,6 @@ const createResults = async () =>{
             </div>
             <button id="pick_flight">Pick</button>
 
-            <button class="close" id="pick_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
         </div>`;
     pick_close_btn = document.querySelector("#pick_close");
     pick_close_btn.addEventListener("click",()=>{
@@ -117,10 +118,15 @@ const createResults = async () =>{
     add_btn = document.querySelector("#pick_flight");
     add_btn.addEventListener("click",()=>{
         let desired_price = parseInt(document.querySelector("#picked_price").value);
-        flights_ToSave.picked_price = desired_price;
-        saved_Flights.push(flights_ToSave);
-        localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
-        document.querySelector("#pick_price").classList.add("hidden");
+        if(isNaN(desired_price) || desired_price<=0){
+            document.querySelector("#picked_price").classList.add("invalid_input");
+        }
+        else{
+            flights_ToSave.picked_price = desired_price;
+            saved_Flights.push(flights_ToSave);
+            localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
+            document.querySelector("#pick_price").classList.add("hidden");
+        }      
     })
 
     for(let i=0;i<flights.length;i++){
@@ -134,7 +140,7 @@ const createResults = async () =>{
             result.addEventListener("click",(ele)=>{
                 let pick_sec = document.querySelector("#pick_price");
                 pick_sec.classList.remove("hidden");
-             pick_sec.classList.add("pick");
+                pick_sec.classList.add("pick");
                 curr_price = flights[i].lowest_price;
                 flights_ToSave = {...flights[i]};
                 let parent = document.querySelector("#results_current_price");
@@ -160,7 +166,7 @@ const updatePrice = () => {
 const formatMyFlight = (ele,i) =>{
     let data = saved_Flights[i];
     data.lowest_price<=data.picked_price ? ele.classList.add("green") : ele.classList.add("red") ;
-    let html = `<img src="${data.airline}" alt="Airline" class="airline_logo">
+    let html = `<img src="https://content.airhex.com/content/logos/airlines_${airlineMapping[data.airline]}_60_40_r.png" alt="Airline" class="airline_logo">
 
             <div class="departure">
                 <p class="departure_time">${data.departure_time}</p>
@@ -226,10 +232,16 @@ const createWatchlist = async () => {
     edit_btn = document.querySelector("#edit_btn");
     edit_btn.addEventListener("click",()=>{
         let new_picked_price = document.querySelector("#new_picked_price");
-        saved_Flights[curr_idx].picked_price = parseInt(new_picked_price.value);
-        createWatchlist();
-        document.querySelector("#edit").classList.add("hidden");
-        localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
+        if(isNaN(parseInt(new_picked_price.value)) || parseInt(new_picked_price.value)>0){
+            document.querySelector("#new_picked_price").classList.add("invalid_input");
+        }
+        else{
+            saved_Flights[curr_idx].picked_price = parseInt(new_picked_price.value);
+            createWatchlist();
+            document.querySelector("#edit").classList.add("hidden");
+            localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
+        } 
+        
     })
     delete_btn = document.querySelector("#delete_btn");
     delete_btn.addEventListener("click",()=>{
@@ -266,14 +278,40 @@ const createWatchlist = async () => {
 }
 
 const homeToResults = () => {
-    watchList.classList.add("hidden");
-    header.classList.remove("hidden");
-    header.classList.add("searching");
-    results.classList.remove("hidden");
-    no_results.classList.remove("no_results");
-    no_results.classList.add("hidden");
-    prev_view = curr_view;
-    curr_view = "results";
+    from_place.classList.remove("invalid_input");
+    to_place.classList.remove("invalid_input");
+    date.classList.remove("invalid_input");
+    if(from_place.value.trim() == ''){
+            from_place.classList.add("invalid_input");
+    }
+    if(to_place.value.trim() == ''){
+            to_place.classList.add("invalid_input");
+    }
+    if(date.value == ''){
+            date.classList.add("invalid_input");
+    }
+    if(from_place.value.trim() != '' && 
+       to_place.value.trim() != '' &&
+        date.value != ''){
+        from_place.classList.remove("invalid_input");
+        to_place.classList.remove("invalid_input");
+        date.classList.remove("invalid_input");
+        watchList.classList.add("hidden");
+        header.classList.remove("hidden");
+        header.classList.add("searching");
+        results.classList.remove("hidden");
+        no_results.classList.remove("no_results");
+        no_results.classList.add("hidden");
+        prev_view = curr_view;
+        curr_view = "results";
+        results.classList.add("loading_state");
+        results.innerHTML = "";
+        results.innerText = "Getting Flights.....";
+        setTimeout(async () => {
+            await createResults();
+        }, 100);
+    }
+
 };
 
 const toHome = () => {
@@ -307,14 +345,6 @@ const back = () =>{
 
 watchList_btn.addEventListener("click",toWatchlist);
 search_btn.addEventListener("click",homeToResults);
-search_btn.addEventListener("click",()=>{
-    results.classList.add("loading_state");
-    results.innerHTML = "";
-    results.innerText = "Getting Flights.....";
-    setTimeout(async () => {
-        await createResults();
-    }, 100);
-});
 no_results_btn.addEventListener("click",()=>{
     no_results.classList.remove("no_results");
     no_results.classList.add("hidden");
