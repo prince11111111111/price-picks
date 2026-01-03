@@ -100,6 +100,7 @@ header.searching #flight_details{
     width: 300px;
     border: 0;
     border-radius: 50px;
+    cursor: pointer;
     margin:1rem;
     font-size: 2rem;
     font-weight: bolder;
@@ -197,16 +198,21 @@ header.searching #flight_details{
 .edit_sec{
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 .pick_btn{
     border-radius: 15px;
     font-size: 1.5rem;
     border: 0;
+    cursor: pointer;
 }
 .edit_btns{
     border-radius: 15px;
+    margin-bottom: 10px;
+    width: 90%;
     font-size: 1.5rem;
     border: 0;
+    cursor: pointer;
 }
 .pick{
     width: 50%;
@@ -248,7 +254,8 @@ header.searching #flight_details{
     border-radius: 15px;
     background-color: white;
     font-size: 1.5rem;
-    width: 33%;
+    margin-right: 20px;
+    width: 25%;
     height: 50px;
 }
 .edit{
@@ -311,6 +318,7 @@ header.searching #flight_details{
     font-size: 1.5rem;
     width: 100%;
     height: 100px;
+    cursor: pointer;
 }
 #edit_btn{
     height: 50px;
@@ -319,6 +327,7 @@ header.searching #flight_details{
     border: 0;
     margin:2vh;
     font-size: 1rem;
+    cursor: pointer;
 }
 #delete_btn{
     height: 50px;
@@ -327,6 +336,7 @@ header.searching #flight_details{
     border: 0;
     margin:2vh;
     font-size: 1rem;
+    cursor: pointer;
 }
 .hidden{
     display: none;
@@ -389,9 +399,9 @@ header.searching #flight_details{
     width: 60px;
     font-size: 1.2rem;
     border-radius: 15px;
-
+    cursor: pointer;
 }
-#flight_details input.invalid_input {
+#flight_details input.invalid_input, #new_picked_price.invalid_input {
     border: 3px;
     border-style: solid;
     border-color: #ee5253;
@@ -430,6 +440,7 @@ header.searching #flight_details{
     #search_btn{
         width: 280px;
         font-size: 1.5rem;
+        cursor: pointer;
     }  
     header.searching #search_sec{
         flex-direction: column;
@@ -481,6 +492,9 @@ header.searching #flight_details{
         left:5%;
         flex-direction: column;
         justify-content: space-around;
+    }
+    #pick_flight{
+        margin-right: 0%;
     }
     #results_current_price,#results_your_price{
         font-size: 1rem;

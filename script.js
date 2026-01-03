@@ -17,6 +17,7 @@ let no_results = document.querySelector("#no_results");
 let no_results_btn = document.querySelector("#no_results_btn");
 let no_watchlisted_flights = document.querySelector("#no_watchlisted_flights");
 let no_watchlisted_flights_btn = document.querySelector("#no_watchlisted_flights_btn");
+let backdrop = document.querySelector("#modal_backdrop");
 let add_btn = null;
 let edit_btn = null;
 let delete_btn = null;
@@ -65,7 +66,7 @@ const showNoWatchlist = () => {
 
 const formatResult = (ele,i) =>{
     let data = flights[i];
-    let html = `<img src=https://content.airhex.com/content/logos/airlines_${airlineMapping[data.airline]}_60_40_r.png" alt="Airline" class="airline_logo">
+    let html = `<img src="https://content.airhex.com/content/logos/airlines_${airlineMapping[data.airline]}_60_40_r.png" alt="Airline" class="airline_logo">
 
             <div class="departure">
                 <p class="departure_time">${data.departure_time}</p>
@@ -113,7 +114,8 @@ const createResults = async () =>{
     pick_close_btn = document.querySelector("#pick_close");
     pick_close_btn.addEventListener("click",()=>{
         let pick_sec = document.querySelector("#pick_price");
-            pick_sec.classList.add("hidden");
+        pick_sec.classList.add("hidden");
+        backdrop.classList.add("hidden");
     })   
     add_btn = document.querySelector("#pick_flight");
     add_btn.addEventListener("click",()=>{
@@ -126,6 +128,7 @@ const createResults = async () =>{
             saved_Flights.push(flights_ToSave);
             localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
             document.querySelector("#pick_price").classList.add("hidden");
+            backdrop.classList.add("hidden");
         }      
     })
 
@@ -140,6 +143,7 @@ const createResults = async () =>{
             result.addEventListener("click",(ele)=>{
                 let pick_sec = document.querySelector("#pick_price");
                 pick_sec.classList.remove("hidden");
+                backdrop.classList.remove("hidden");
                 pick_sec.classList.add("pick");
                 curr_price = flights[i].lowest_price;
                 flights_ToSave = {...flights[i]};
@@ -228,24 +232,25 @@ const createWatchlist = async () => {
     edit_close_btn.addEventListener("click",()=>{
         let edit = document.querySelector("#edit");
         edit.classList.add("hidden");
+        backdrop.classList.add("hidden");
     })  
     edit_btn = document.querySelector("#edit_btn");
     edit_btn.addEventListener("click",()=>{
         let new_picked_price = document.querySelector("#new_picked_price");
-        if(isNaN(parseInt(new_picked_price.value)) || parseInt(new_picked_price.value)>0){
-            document.querySelector("#new_picked_price").classList.add("invalid_input");
-        }
-        else{
+        if(isNaN(parseInt(new_picked_price.value)) || parseInt(new_picked_price.value)<=0){
+            new_picked_price.classList.add("invalid_input");
+        }else{
             saved_Flights[curr_idx].picked_price = parseInt(new_picked_price.value);
-            createWatchlist();
             document.querySelector("#edit").classList.add("hidden");
             localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
+            createWatchlist();
+            backdrop.classList.add("hidden");
         } 
-        
     })
     delete_btn = document.querySelector("#delete_btn");
     delete_btn.addEventListener("click",()=>{
         saved_Flights.splice(curr_idx,1);
+        backdrop.classList.add("hidden");
         createWatchlist();
         document.querySelector("#edit").classList.add("hidden");
         localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
@@ -260,6 +265,7 @@ const createWatchlist = async () => {
         my_flight.addEventListener("click",(ele)=>{
             let edit = document.querySelector("#edit");
             edit.classList.remove("hidden");
+            backdrop.classList.remove("hidden");
             edit.classList.add("edit");
             curr_idx = i;
             curr_price = saved_Flights[i].lowest_price;
