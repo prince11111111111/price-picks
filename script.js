@@ -1,5 +1,6 @@
 import { indianAirports } from './Airports.js';
 import { airlineMapping } from './Airlines.js';
+import { clientId, clientSecret } from './config.js';
 
 let search_btn = document.querySelector("#search_btn");
 let header = document.querySelector("header");
@@ -44,6 +45,24 @@ let flights = [];
 let flights_ToSave = null;
 
 let saved_Flights = JSON.parse(localStorage.getItem("my_flights")) || [];
+
+const getAccessToken = async () => {
+    try{
+        let response = await fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: `grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}`
+                        })
+        if(response.ok){
+            let data = await response.json();
+            return data.access_token;
+        }else console.log("Bad Request");
+    }catch(error){
+        console.log(error);
+    }
+}
 
 const getFlights = async () => {
     try{
@@ -350,6 +369,11 @@ const back = () =>{
 }
 
 watchList_btn.addEventListener("click",toWatchlist);
+search_btn.addEventListener('click', async () => {
+    console.log("Searching...");
+    const token = await getAccessToken();
+    console.log("Got my token:", token);
+});
 search_btn.addEventListener("click",homeToResults);
 no_results_btn.addEventListener("click",()=>{
     no_results.classList.remove("no_results");
