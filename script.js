@@ -64,10 +64,19 @@ const getAccessToken = async () => {
     }
 }
 
-const getFlights = async () => {
+const getFlights = async (token, origin, destination, date) => {
     try{
-        flights = await (await fetch(URL)).json();
-        console.log("Data fetched");
+        let response = await fetch(`https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${origin}&destinationLocationCode=${destination}&departureDate=${date}&adults=1`, {
+                            method: 'GET',
+                            headers: {
+                                "Authorization": `Bearer ${token}`
+                            }
+                        })
+        if(response.ok){
+            let data = await response.json();
+            flights = data.data;
+            console.log(flights);
+        }else console.log("No response");
     }catch(error){
         console.log(error);
     }
@@ -84,28 +93,29 @@ const showNoWatchlist = () => {
 };
 
 const formatResult = (ele,i) =>{
+    console.log("Formatting index:", i)
     let data = flights[i];
-    let html = `<img src="https://content.airhex.com/content/logos/airlines_${airlineMapping[data.airline]}_60_40_r.png" alt="Airline" class="airline_logo">
+    let html = `<img src="https://content.airhex.com/content/logos/airlines_${data.validatingAirlineCodes[0]}_60_40_r.png" alt="Airline" class="airline_logo">
 
             <div class="departure">
-                <p class="departure_time">${data.departure_time}</p>
-                <p class="departure_airport">${data.departure_airport}</p>
+                <p class="departure_time">${data.itineraries[0].segments[0].departure.at}</p>
+                <p class="departure_airport">${data.itineraries[0].segments[0].departure.iataCode}</p>
             </div>
 
             <div class="inbetween">
-                <p class="flight_length">${data.length}</p>
+                <p class="flight_length">${data.itineraries[0].duration}</p>
                 <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
-                <p class="flight_type"> ${data.type}</p>
+                <p class="flight_type"> ${data.itineraries[0].segments.length - 1}</p>
             </div>
 
             <div class="arrival">
-                <p class="arrival_time">${data.arrival_time}</p>
-                <p class="arrival_airport">${data.arrival_airport}</p>
+                <p class="arrival_time">${data.itineraries[0].segments[data.itineraries[0].segments.length - 1].arrival.at}</p>
+                <p class="arrival_airport">${data.itineraries[0].segments[data.itineraries[0].segments.length - 1].arrival.iataCode}</p>
             </div>
 
             <div class="price">
 
-                <p class="lowest_price">Rs.${data.lowest_price}</p>
+                <p class="lowest_price">Rs.${data.price.grandTotal}</p>
 
                 <button class="pick_btn">Pick</button>
             </div>`;
@@ -115,7 +125,8 @@ const formatResult = (ele,i) =>{
 const createResults = async () =>{
     let flag = true;
     
-    await getFlights();
+    const token = await getAccessToken();
+    await getFlights(token, from_place.value , to_place.value , date.value);
 
     results.classList.remove("loading_state");
     results.innerHTML =`<div id="pick_price" class="hidden">
@@ -152,10 +163,8 @@ const createResults = async () =>{
     })
 
     for(let i=0;i<flights.length;i++){
-        if(flights[i].departure_airport == from_place.value.trim().toUpperCase() && 
-            flights[i].arrival_airport == to_place.value.trim().toUpperCase() &&
-            flights[i].date == date.value){
-            flag = false;
+        if(flights.length==0) showNoResult();
+        else{
             let result = document.createElement("div");
             result.classList.add("result");
             formatResult(result,i);
@@ -174,7 +183,7 @@ const createResults = async () =>{
             results.appendChild(result);
         }
     }
-    if(flag || flights.length==0) showNoResult();
+    
 };
 
 const updatePrice = () => {
@@ -369,16 +378,11 @@ const back = () =>{
 }
 
 watchList_btn.addEventListener("click",toWatchlist);
-search_btn.addEventListener('click', async () => {
-    console.log("Searching...");
-    const token = await getAccessToken();
-    console.log("Got my token:", token);
-});
 search_btn.addEventListener("click",homeToResults);
 no_results_btn.addEventListener("click",()=>{
     no_results.classList.remove("no_results");
     no_results.classList.add("hidden");
-})
+});
 no_watchlisted_flights_btn.addEventListener("click",back);
 
 watchList_btn.addEventListener("click",createWatchlist);
