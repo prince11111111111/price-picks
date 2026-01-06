@@ -64,6 +64,13 @@ const getAccessToken = async () => {
     }
 }
 
+const toINR = async (amount) =>{
+    let res = await fetch(`https://v6.exchangerate-api.com/v6/f8afdba7273ffb8cc3d85343/latest/EUR`);
+    let data = await res.json();
+    
+    return Math.floor(data.conversion_rates["INR"]*amount*100)/100
+}
+
 const getFlights = async (token, origin, destination, date) => {
     try{
         let response = await fetch(`https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${origin}&destinationLocationCode=${destination}&departureDate=${date}&adults=1`, {
@@ -92,30 +99,29 @@ const showNoWatchlist = () => {
     no_watchlisted_flights.classList.add("no_results");
 };
 
-const formatResult = (ele,i) =>{
-    console.log("Formatting index:", i)
+const formatResult = async (ele,i) =>{
     let data = flights[i];
     let html = `<img src="https://content.airhex.com/content/logos/airlines_${data.validatingAirlineCodes[0]}_60_40_r.png" alt="Airline" class="airline_logo">
 
             <div class="departure">
-                <p class="departure_time">${data.itineraries[0].segments[0].departure.at}</p>
+                <p class="departure_time">${data.itineraries[0].segments[0].departure.at.split('T')[1].slice(0,5)}</p>
                 <p class="departure_airport">${data.itineraries[0].segments[0].departure.iataCode}</p>
             </div>
 
             <div class="inbetween">
-                <p class="flight_length">${data.itineraries[0].duration}</p>
+                <p class="flight_length">${data.itineraries[0].duration.split('T')[1].slice(0,6).replace("H","h").replace("M","m")}</p>
                 <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
-                <p class="flight_type"> ${data.itineraries[0].segments.length - 1}</p>
+                <p class="flight_type"> Stops : ${data.itineraries[0].segments.length - 1}</p>
             </div>
 
             <div class="arrival">
-                <p class="arrival_time">${data.itineraries[0].segments[data.itineraries[0].segments.length - 1].arrival.at}</p>
+                <p class="arrival_time">${data.itineraries[0].segments[data.itineraries[0].segments.length - 1].arrival.at.split("T")[1].slice(0,5)}</p>
                 <p class="arrival_airport">${data.itineraries[0].segments[data.itineraries[0].segments.length - 1].arrival.iataCode}</p>
             </div>
 
             <div class="price">
 
-                <p class="lowest_price">Rs.${data.price.grandTotal}</p>
+                <p class="lowest_price">Rs.${await toINR(data.price.grandTotal)}</p>
 
                 <button class="pick_btn">Pick</button>
             </div>`;
@@ -148,7 +154,7 @@ const createResults = async () =>{
         backdrop.classList.add("hidden");
     })   
     add_btn = document.querySelector("#pick_flight");
-    add_btn.addEventListener("click",()=>{
+    add_btn.addEventListener("click",async()=>{
         let desired_price = parseInt(document.querySelector("#picked_price").value);
         if(isNaN(desired_price) || desired_price<=0){
             document.querySelector("#picked_price").classList.add("invalid_input");
@@ -168,12 +174,12 @@ const createResults = async () =>{
             let result = document.createElement("div");
             result.classList.add("result");
             formatResult(result,i);
-            result.addEventListener("click",(ele)=>{
+            result.addEventListener("click",async (ele)=>{
                 let pick_sec = document.querySelector("#pick_price");
                 pick_sec.classList.remove("hidden");
                 backdrop.classList.remove("hidden");
                 pick_sec.classList.add("pick");
-                curr_price = flights[i].lowest_price;
+                curr_price = await toINR(flights[i].price.grandTotal);
                 flights_ToSave = {...flights[i]};
                 let parent = document.querySelector("#results_current_price");
                 let html = `<p>Current Lowest Price<p>
@@ -195,31 +201,31 @@ const updatePrice = () => {
     }
 }
 
-const formatMyFlight = (ele,i) =>{
+const formatMyFlight = async (ele,i) =>{
     let data = saved_Flights[i];
-    data.lowest_price<=data.picked_price ? ele.classList.add("green") : ele.classList.add("red") ;
-    let html = `<img src="https://content.airhex.com/content/logos/airlines_${airlineMapping[data.airline]}_60_40_r.png" alt="Airline" class="airline_logo">
+    await toINR(data.price.grandTotal)<=data.picked_price ? ele.classList.add("green") : ele.classList.add("red") ;
+    let html = `<img src="https://content.airhex.com/content/logos/airlines_${data.validatingAirlineCodes[0]}_60_40_r.png" alt="Airline" class="airline_logo">
 
             <div class="departure">
-                <p class="departure_time">${data.departure_time}</p>
-                <p class="departure_airport">${data.departure_airport}</p>
+                <p class="departure_time">${data.itineraries[0].segments[0].departure.at.split('T')[1].slice(0,5)}</p>
+                <p class="departure_airport">${data.itineraries[0].segments[0].departure.iataCode}</p>
             </div>
 
             <div class="inbetween">
-                <p class="flight_length">${data.length}</p>
+                <p class="flight_length">${data.itineraries[0].duration.split('T')[1].slice(0,6).replace("H","h").replace("M","m")}</p>
                 <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
-                <p class="flight_type"> ${data.type}</p>
+                <p class="flight_type"> Stops : ${data.itineraries[0].segments.length - 1}</p>
             </div>
 
             <div class="arrival">
-                <p class="arrival_time">${data.arrival_time}</p>
-                <p class="arrival_airport">${data.arrival_airport}</p>
+                <p class="arrival_time">${data.itineraries[0].segments[data.itineraries[0].segments.length - 1].arrival.at.split("T")[1].slice(0,5)}</p>
+                <p class="arrival_airport">${data.itineraries[0].segments[data.itineraries[0].segments.length - 1].arrival.iataCode}</p>
             </div>
 
             <div class="edit_sec">
 
                 <div class="price">
-                    <p class="lowest_price">Current Price:Rs.${data.lowest_price}</p>
+                    <p class="lowest_price">Current Price:Rs.${await toINR(data.price.grandTotal)}</p>
 
                     <p class="picked_price">Picked Price: Rs.${data.picked_price}</p>
                 </div>
