@@ -159,6 +159,7 @@ header.searching #flight_details{
     width:50%;
 }
 .airline_logo{
+    margin-left: 10px;
     width: 100px;
 }
 
