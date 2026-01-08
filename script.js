@@ -87,9 +87,9 @@ const getFlights = async (token, origin, destination, date) => {
             let data = await response.json();
             flights = data.data;
             console.log(flights);
-        }else console.log("No response");
+        }else showNoResult();
     }catch(error){
-        console.log(error);
+        alert("Bad Request");
     }
 }
 
@@ -107,7 +107,7 @@ const formatTime = (str) => {
     return str.split('T')[1].slice(0,5);
 };
 
-const formatLenght = (str) => {
+const formatLength = (str) => {
     return str.split('T')[1].slice(0,6).replace("H","h").replace("M","m")
 };
 
@@ -116,10 +116,10 @@ const saveFlight = (arr) => {
     return {
         "airline" : arr.validatingAirlineCodes[0],
         "departure_airport" : arr.itineraries[0].segments[0].departure.iataCode,
-        "deaprture_time" :formatTime(arr.itineraries[0].segments[0].departure.at),
-        "flight_length" : formatLenght(arr.itineraries[0].duration),
+        "departure_time" : formatTime(arr.itineraries[0].segments[0].departure.at),
+        "flight_length" : formatLength(arr.itineraries[0].duration),
         "arrival_airport" : arr.itineraries[0].segments[stops].arrival.iataCode,
-        "arrival_time" :formatTime(arr.itineraries[0].segments[stops].arrival.at),
+        "arrival_time" : formatTime(arr.itineraries[0].segments[stops].arrival.at),
         "price" : toINR(arr.price.grandTotal),
         "stops" : stops
     };
@@ -136,7 +136,7 @@ const formatResult = async (ele,i) =>{
             </div>
 
             <div class="inbetween">
-                <p class="flight_length">${formatLenght(data.itineraries[0].duration)}</p>
+                <p class="flight_length">${formatLength(data.itineraries[0].duration)}</p>
                 <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
                 <p class="flight_type"> Stops : ${stops}</p>
             </div>
@@ -158,7 +158,7 @@ const formatResult = async (ele,i) =>{
 const createResults = async () =>{
     let flag = true;
     
-    const token = await getAccessToken();
+    let token = await getAccessToken();
     await getFlights(token, from_place.value , to_place.value , date.value);
     EXR = await getExchangeRate();
 
@@ -189,6 +189,7 @@ const createResults = async () =>{
         }
         else{
             flights_ToSave.picked_price = desired_price;
+            flights_ToSave.date = date.value;
             saved_Flights.push(flights_ToSave);
             localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
             document.querySelector("#pick_price").classList.add("hidden");
@@ -220,22 +221,29 @@ const createResults = async () =>{
     
 };
 
-const updatePrice = () => {
+const updatePrice = async (token) => {
     for(let i=0;i<saved_Flights.length;i++){
-        let Id = saved_Flights[i].id;
-        for(let j of flights){
-            if(j.id==Id) saved_Flights[i].lowest_price = j.lowest_price;
+        let date = saved_Flights[i].date;
+        let departure_airport = saved_Flights[i].departure_airport;
+        let arrival_airport = saved_Flights[i].arrival_airport;
+        await getFlights(token,departure_airport,arrival_airport,date);
+        for(let j=0;j<flights.length;j++){
+            let stops = flights[j].itineraries[0].segments.length - 1;
+            if(formatTime(flights[j].itineraries[0].segments[stops].arrival.at)==saved_Flights[i].arrival_time &&
+            formatTime(flights[j].itineraries[0].segments[0].departure.at) == saved_Flights[i].departure_time){
+                saved_Flights[i].price = toINR(flights[j].price.grandTotal);
+            }
         }
     }
 }
 
 const formatMyFlight = async (ele,i) =>{
     let data = saved_Flights[i];
-    toINR(data.price.grandTotal)<=data.picked_price ? ele.classList.add("green") : ele.classList.add("red") ;
+    toINR(data.price)<=data.picked_price ? ele.classList.add("green") : ele.classList.add("red") ;
     let html = `<img src="https://content.airhex.com/content/logos/airlines_${data.airline}_60_40_r.png" alt="Airline" class="airline_logo">
 
             <div class="departure">
-                <p class="departure_time">${data.deaprture_time}</p>
+                <p class="departure_time">${data.departure_time}</p>
                 <p class="departure_airport">${data.departure_airport}</p>
             </div>
 
@@ -318,8 +326,8 @@ const createWatchlist = async () => {
         localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
     })
     if(saved_Flights.length==0) showNoWatchlist();
-    // await getFlights();
-    // updatePrice();
+    let token = await getAccessToken();
+    await updatePrice(token);
     for(let i=0;i<saved_Flights.length;i++){
         let my_flight = document.createElement("div");
         my_flight.classList.add("myFlight");
