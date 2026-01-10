@@ -264,7 +264,7 @@ const updatePrice = async (token) => {
 
 const formatMyFlight = async (ele,i) =>{
     let data = saved_Flights[i];
-    toINR(data.price)<=data.picked_price ? ele.classList.add("green") : ele.classList.add("red") ;
+    data.price<=data.picked_price ? ele.classList.add("green") : ele.classList.add("red") ;
     let html = `<img src="https://content.airhex.com/content/logos/airlines_${data.airline}_60_40_r.png" alt="Airline" class="airline_logo">
 
             <div class="departure">
