@@ -1,5 +1,4 @@
 import { indianAirports } from './Airports.js';
-import { airlineMapping } from './Airlines.js';
 import { clientId, clientSecret } from './config.js';
 
 let search_btn = document.querySelector("#search_btn");
@@ -156,24 +155,41 @@ const formatResult = async (ele,i) =>{
 };
 
 const createResults = async () =>{
-    let flag = true;
-    
     let token = await getAccessToken();
     await getFlights(token, from_place.value , to_place.value , date.value);
     EXR = await getExchangeRate();
 
     results.classList.remove("loading_state");
     results.innerHTML =`<div id="pick_price" class="hidden">
-            <button class="close" id="pick_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
-            <div id="results_current_price">
-            </div>
-            
-            <div id="results_your_price">
-                <label for="picked_price">Pick Your Price</label>
-                <input type="number" placeholder="Pick Price" id="picked_price">
-            </div>
-            <button id="pick_flight">Pick</button>
+            <div class="modal_ticket">
+                <img class="modal_logo airline_logo" id="result_modal_logo" src="" alt="Airline">
+                <div class="modal_dep">
+                    <p class="modal_dep_time" id="result_modal_dep_time"></p>
+                    <p class="modal_dep_airport" id="result_modal_dep_airport"></p>
+                </div>
 
+                <div class="modal_inbetween">
+                    <p class="modal_flight_len" id="result_modal_flight_len"></p>
+                    <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="modal_inbtw_icon" height="30px" width="120px">
+                    <p class="modal_flight_type" id="result_modal_flight_type"></p>
+                </div>
+
+                <div class="modal_arr">
+                    <p class="modal_arr_time" id="result_modal_arr_time"></p>
+                    <p class="modal_arr_airport" id="result_modal_arr_airport"></p>
+                </div>
+            </div>
+            <div id="select_price">
+                <button class="close" id="pick_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
+                <div id="results_current_price">
+                </div>
+            
+                <div id="results_your_price">
+                    <label for="picked_price">Pick Your Price</label>
+                    <input type="number" placeholder="Pick Price" id="picked_price">
+                </div>
+                <button id="pick_flight">Pick</button>
+            </div>
         </div>`;
     pick_close_btn = document.querySelector("#pick_close");
     pick_close_btn.addEventListener("click",()=>{
@@ -208,8 +224,17 @@ const createResults = async () =>{
                 pick_sec.classList.remove("hidden");
                 backdrop.classList.remove("hidden");
                 pick_sec.classList.add("pick");
+                let picked_price = document.querySelector("#picked_price");
+                picked_price.value = null;
                 curr_price = toINR(flights[i].price.grandTotal);
                 flights_ToSave = saveFlight(flights[i]);
+                document.querySelector("#result_modal_logo").src = `https://content.airhex.com/content/logos/airlines_${flights_ToSave.airline}_60_40_r.png`;
+                document.querySelector("#result_modal_dep_airport").innerText = flights_ToSave.departure_airport;
+                document.querySelector("#result_modal_arr_airport").innerText = flights_ToSave.arrival_airport;
+                document.querySelector("#result_modal_dep_time").innerText = flights_ToSave.departure_time;
+                document.querySelector("#result_modal_arr_time").innerText = flights_ToSave.arrival_time;
+                document.querySelector("#result_modal_flight_len").innerText = flights_ToSave.flight_length;
+                document.querySelector("#result_modal_flight_type").innerText = `Stops : ${flights_ToSave.stops}`;
                 let parent = document.querySelector("#results_current_price");
                 let html = `<p>Current Lowest Price<p>
                 <p id="results_current_lowest_price">${curr_price}</p>`;
@@ -273,30 +298,49 @@ const formatMyFlight = async (ele,i) =>{
 
 const createWatchlist = async () => {
     my_flights.innerHTML =`<div id="edit" class="hidden">
-
-            <div class="prices">
-
-                <div id="watchlist_current_price">
+            <div class="modal_ticket">
+                <img class="modal_logo airline_logo" id="wl_modal_logo" src="" alt="Airline">
+                <div class="modal_dep">
+                    <p class="modal_dep_time" id="wl_modal_dep_time"></p>
+                    <p class="modal_dep_airport" id="wl_modal_dep_airport"></p>
                 </div>
+
+                <div class="modal_inbetween">
+                    <p class="modal_flight_len" id="wl_modal_flight_len"></p>
+                    <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="modal_inbtw_icon" height="30px" width="120px">
+                    <p class="modal_flight_type" id="id_modal_flight_type"></p>
+                </div>
+
+                <div class="modal_arr">
+                    <p class="modal_arr_time" id="wl_modal_arr_time"></p>
+                    <p class="modal_arr_airport" id="wl_modal_arr_airport"></p>
+                </div>
+            </div>
+            <div id="update">
+                <div class="prices">
+
+                    <div id="watchlist_current_price">
+                    </div>
             
-                <div id="watchlist_your_price">
+                    <div id="watchlist_your_price">
+                    </div>
+
+                    <div id="new_price">
+
+                        <label for="new_picked_price">Update Price</label>
+                        <input type="number" placeholder="Pick Price" id="new_picked_price">
+                    </div>
                 </div>
 
-                <div id="new_price">
+                <div id="edit_btns">
 
-                    <label for="new_picked_price">Update Price</label>
-                    <input type="number" placeholder="Pick Price" id="new_picked_price">
+                    <button id="edit_btn">Edit</button>
+
+                    <button id="delete_btn">Delete</button>
                 </div>
-            </div>
 
-            <div id="edit_btns">
-
-                <button id="edit_btn">Edit</button>
-
-                <button id="delete_btn">Delete</button>
-            </div>
-
-            <button class="close" id="edit_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
+                <button class="close" id="edit_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
+            </div>    
         </div>`;
     edit_close_btn = document.querySelector("#edit_close");
     edit_close_btn.addEventListener("click",()=>{
@@ -348,6 +392,13 @@ const createWatchlist = async () => {
             html = `<p >Your Picked Price</p>
             <p id="curr_picked_price">Rs.${picked_price}</p>`;
             parent.innerHTML = html;
+            document.querySelector("#wl_modal_logo").src = `https://content.airhex.com/content/logos/airlines_${saved_Flights[i].airline}_60_40_r.png`;
+            document.querySelector("#wl_modal_dep_airport").innerText = saved_Flights[i].departure_airport;
+            document.querySelector("#wl_modal_arr_airport").innerText = saved_Flights[i].arrival_airport;
+            document.querySelector("#wl_modal_dep_time").innerText = saved_Flights[i].departure_time;
+            document.querySelector("#wl_modal_arr_time").innerText = saved_Flights[i].arrival_time;
+            document.querySelector("#wl_modal_flight_len").innerText = saved_Flights[i].flight_length;
+            document.querySelector("#wl_modal_flight_type").innerText = `Stops : ${saved_Flights[i].stops}`;
         });
         my_flights.appendChild(my_flight);
     }
