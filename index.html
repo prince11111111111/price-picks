@@ -43,8 +43,21 @@
                     <input type="date" id="from_date" required>
                 </div>
             </div>
-            
+
             <button id="search_btn">Find</button>
+            
+            <div id="sort" class="hidden">
+
+                    <label for="sort_options">Sort</label>
+
+                    <br>
+
+                    <select id="sort_select">
+                        <option value="price_low">Cheapest First</option>
+                        <option value="price_high">Most Expensive First</option>
+                        <option value="duration">Shortest Duration</option>
+                    </select>
+            </div>
         </section>
     </header>
 
