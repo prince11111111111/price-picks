@@ -13,8 +13,10 @@ let from_place = document.querySelector("#from_place");
 let to_place = document.querySelector("#to_place");
 let date = document.querySelector("#from_date");
 let airport_options = document.querySelector("#airport_suggestions");
-let sort_options = document.querySelector("#sort")
+let sort_sec = document.querySelector("#sort")
 let sort_type = document.querySelector("#sort_select");
+let filter_sec = document.querySelector("#filter")
+let filter_type = document.querySelector("#filter_select");
 let no_results = document.querySelector("#no_results");
 let no_results_btn = document.querySelector("#no_results_btn");
 let no_watchlisted_flights = document.querySelector("#no_watchlisted_flights");
@@ -126,6 +128,11 @@ const saveFlight = (arr) => {
     };
 };
 
+const getMinutes = (timeStr) => {
+    let [hours, minutes] = timeStr.split(":").map(Number);
+    return (hours * 60) + minutes;
+};
+
 const getDurationMinutes = (str) => {
     let duration = str.replace("PT", "");
     let hours = 0, minutes = 0;
@@ -139,8 +146,7 @@ const getDurationMinutes = (str) => {
     return (hours * 60) + minutes;
 };
 
-const formatResult = async (ele,i) =>{
-    let data = flights[i];
+const formatResult = async (ele,data) =>{
     let stops = data.itineraries[0].segments.length - 1;
     let html = `<img src="https://content.airhex.com/content/logos/airlines_${data.validatingAirlineCodes[0]}_60_40_r.png" alt="Airline" class="airline_logo">
 
@@ -222,10 +228,10 @@ const renderFlights = (flightList) => {
 
     if(flightList.length === 0) showNoResult();
 
-    flightList.forEach((flight, i) => {
+    flightList.forEach((flight) => {
         let result = document.createElement("div");
         result.classList.add("result");
-        formatResult(result, i);
+        formatResult(result, flight);
         result.addEventListener("click", async () => {
             let pick_sec = document.querySelector("#pick_price");
             flights_ToSave = saveFlight(flight);
@@ -249,15 +255,52 @@ const renderFlights = (flightList) => {
     });
 };
 
+const sortAndFilter = () => {
+    let  processed_flights = [...flights];
+    let  filter_value = filter_type.value;
+    if (filter_value != "all") {
+        processed_flights = processed_flights.filter(val => {
+            try {
+                let stops = val.itineraries[0].segments.length - 1;
+                let timeMins = getMinutes(formatTime(val.itineraries[0].segments[0].departure.at));
+                if (filter_value === "no_stops") return stops == 0;
+                if (filter_value === "early") return timeMins >= 0 && timeMins < 480;
+                if (filter_value === "mid") return timeMins >= 480 && timeMins < 960;
+                if (filter_value === "late") return timeMins >= 960 && timeMins <= 1440;
+            } catch (error) {
+                console.error("Skipping bad flight data", error);
+                return false;
+            }
+        });
+    }
+    
+    let sort_value = sort_type.value;
+
+    if (sort_value === "price_low") {
+        processed_flights.sort((a, b) => parseFloat(a.price.grandTotal) - parseFloat(b.price.grandTotal));
+    } 
+    else if (sort_value === "price_high") {
+        processed_flights.sort((a, b) => parseFloat(b.price.grandTotal) - parseFloat(a.price.grandTotal));
+    } 
+    else if (sort_value === "duration") {
+        processed_flights.sort((a, b) => getDurationMinutes(a.itineraries[0].duration) - getDurationMinutes(b.itineraries[0].duration));
+    }
+    no_results.classList.add("hidden");
+    no_results.classList.remove("no_results");
+    renderFlights(processed_flights);
+};
+
 const createResults = async () => {
     let token = await getAccessToken();
     await getFlights(token, from_place.value, to_place.value, date.value);
     EXR = await getExchangeRate();
 
-    results.classList.remove("loading_state");
-    sort_options.classList.remove("hidden");
+    loader.classList.add("hidden");
+    results.classList.remove("hidden");
+    sort_sec.classList.remove("hidden");
+    filter_sec.classList.remove("hidden");
 
-    renderFlights(flights);
+    sortAndFilter();
 };
 
 const updatePrice = async (token) => {
@@ -445,10 +488,12 @@ const homeToResults = () => {
         no_results.classList.add("hidden");
         prev_view = curr_view;
         curr_view = "results";
-        results.classList.add("loading_state");
+        loader.classList.remove("hidden");
+        results.classList.add("hidden");
         results.innerHTML = "";
         results.innerText = "Getting Flights.....";
-        sort_options.classList.remove("hidden");
+        sort_sec.classList.remove("hidden");
+        filter_sec.classList.remove("hidden");
         setTimeout(async () => {
             await createResults();
         }, 100);
@@ -463,7 +508,8 @@ const toHome = () => {
     watchList.classList.add("hidden");
     no_results.classList.remove("no_results");
     no_results.classList.add("hidden");
-    sort_options.classList.add("hidden");
+    sort_sec.classList.add("hidden");
+    filter_sec.classList.add("hidden");
     prev_view = curr_view;
     curr_view = "home";
 };
@@ -486,20 +532,10 @@ const back = () =>{
     };
 }
 
-sort_type.addEventListener("change", () => {
-    let type = sort_type.value;
+sort_type.addEventListener("change", sortAndFilter);
 
-    if (type === "price_low") {
-        flights.sort((a, b) => parseFloat(a.price.grandTotal) - parseFloat(b.price.grandTotal));
-    } 
-    else if (type === "price_high") {
-         flights.sort((a, b) => parseFloat(b.price.grandTotal) - parseFloat(a.price.grandTotal));
-    } 
-    else if (type === "duration") {
-        flights.sort((a, b) => getDurationMinutes(a.itineraries[0].duration) - getDurationMinutes(b.itineraries[0].duration));
-    }
-    renderFlights(flights);
-});
+filter_type.addEventListener("change", sortAndFilter);
+
 watchList_btn.addEventListener("click",toWatchlist);
 search_btn.addEventListener("click",homeToResults);
 no_results_btn.addEventListener("click",()=>{

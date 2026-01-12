@@ -58,6 +58,20 @@
                         <option value="duration">Shortest Duration</option>
                     </select>
             </div>
+            <div id="filter" class="hidden">
+
+                    <label for="filter_options">Filter</label>
+
+                    <br>
+
+                    <select id="filter_select">
+                        <option value="all">All Flights</option>
+                        <option value="no_stops">Non Stop</option>
+                        <option value="early">Early Morning flights</option>
+                        <option value="mid">Mid Day flights</option>
+                        <option value="late">Evening Flights</option>
+                    </select>
+            </div>
         </section>
     </header>
 
@@ -68,6 +82,13 @@
         <button id="no_results_btn">Close</button>
     </div>
 
+    <div id="loader" class="hidden">
+        <div class="loader_content">
+            <img src="icons/plane_ic.png" alt="Loading..." id="flying_plane">
+            <p>Getting Flights<span class="dots">...</span></p>
+        </div>
+    </div>
+    
     <section id="watchlist_sec" class="hidden">
 
         <div id="watchlist_header">
