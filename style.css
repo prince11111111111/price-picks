@@ -421,7 +421,7 @@ header.searching #flight_details{
     border-color: #091540;
     background-color: #7692FF;
 }
-#no_results_btn, #no_watchlisted_flights_btn{
+#no_results_btn, #no_watchlisted_flights_btn, #no_response_btn{
     padding:2px;
     height: 30px;
     width: 60px;
@@ -433,6 +433,15 @@ header.searching #flight_details{
     border: 3px;
     border-style: solid;
     border-color: #ee5253;
+}
+h1{
+    cursor: pointer;
+}
+h2{
+    cursor: pointer;
+}
+img{
+    cursor: pointer;
 }
 .close{
     position: absolute;
@@ -447,7 +456,7 @@ header.searching #flight_details{
     width: 25px;
     height: 25px;
 }
-#loader {
+.loader {
     width: 100%;
     height: 300px;
     display: flex;

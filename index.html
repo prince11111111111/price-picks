@@ -100,18 +100,23 @@
             <img src="icons/profile_ic.png" alt="Profile" class="profile">
         </div>
 
-        <div id="my_flights">
+        <div id="my_flights"></div>
 
-        </div>
         <div id="no_watchlisted_flights" class = "hidden" >
-        <img src="icons/cross_ic.png" alt="Cross" class="cross">
-        No Watchlisted Flights
-        <button id="no_watchlisted_flights_btn">Close</button>
-    </div>
-
+            <img src="icons/cross_ic.png" alt="Cross" class="cross">
+            No Watchlisted Flights
+            <button id="no_watchlisted_flights_btn">Close</button>
+        </div>
     </section>
 
     <div id="modal_backdrop" class="modal-backdrop hidden"></div>
+
+    <div id="no_response" class = "hidden" >
+        <img src="icons/cross_ic.png" alt="Cross" class="cross">
+        <span>Something Unexpected Happeneded 
+        Try Again.</span>
+        <button id="no_response_btn">Close</button>
+    </div>
     <script type ="module" src="script.js"></script>
 </body>
 </html>
