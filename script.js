@@ -1,34 +1,40 @@
 import { indianAirports } from './Airports.js';
 import { clientId, clientSecret } from './config.js';
 
-let search_btn = document.querySelector("#search_btn");
-let header = document.querySelector("header");
-let results = document.querySelector("#results");
-let heading = document.querySelector("h1");
-let watchlist_title = document.querySelector("h2");
-let watchList = document.querySelector("#watchlist_sec");
-let watchList_btn = document.querySelector("#watchlist_btn");
-let my_flights = document.querySelector("#my_flights");
-let back_btn = document.querySelector("#back_btn");
-let from_place = document.querySelector("#from_place");
-let to_place = document.querySelector("#to_place");
-let date = document.querySelector("#from_date");
-let airport_options = document.querySelector("#airport_suggestions");
-let sort_sec = document.querySelector("#sort")
-let sort_type = document.querySelector("#sort_select");
-let filter_sec = document.querySelector("#filter")
-let filter_type = document.querySelector("#filter_select");
-let no_results = document.querySelector("#no_results");
-let no_results_btn = document.querySelector("#no_results_btn");
-let no_watchlisted_flights = document.querySelector("#no_watchlisted_flights");
-let no_watchlisted_flights_btn = document.querySelector("#no_watchlisted_flights_btn");
-let no_response = document.querySelector("#no_response");
-let no_response_btn = document.querySelector("#no_response_btn");
-let backdrop = document.querySelector("#modal_backdrop");
+const search_btn = document.querySelector("#search_btn");
+const header = document.querySelector("header");
+const results = document.querySelector("#results");
+const flight_cards = document.querySelector("#flight_cards");
+const pick = document.querySelector("#pick_price");
+const edit = document.querySelector("#edit");
+const new_price_input = document.querySelector("#new_picked_price");
+const heading = document.querySelector("h1");
+const watchlist_title = document.querySelector("h2");
+const watchList = document.querySelector("#watchlist_sec");
+const watchList_btn = document.querySelector("#watchlist_btn");
+const my_flights = document.querySelector("#my_flights");
+const back_btn = document.querySelector("#back_btn");
+const from_place = document.querySelector("#from_place");
+const to_place = document.querySelector("#to_place");
+const date = document.querySelector("#from_date");
+const airport_options = document.querySelector("#airport_suggestions");
+const sort_sec = document.querySelector("#sort")
+const sort_type = document.querySelector("#sort_select");
+const filter_sec = document.querySelector("#filter")
+const filter_type = document.querySelector("#filter_select");
+const no_results = document.querySelector("#no_results");
+const no_results_btn = document.querySelector("#no_results_btn");
+const no_watchlisted_flights = document.querySelector("#no_watchlisted_flights");
+const no_watchlisted_flights_btn = document.querySelector("#no_watchlisted_flights_btn");
+const no_response = document.querySelector("#no_response");
+const no_response_btn = document.querySelector("#no_response_btn");
+const pick_btn = document.querySelector("#pick_flight");
+const pick_close_btn = document.querySelector("#pick_close");
+const edit_close_btn = document.querySelector("#edit_close");
+const edit_btn = document.querySelector("#edit_btn");
+const delete_btn = document.querySelector("#delete_btn");
+const backdrop = document.querySelector("#modal_backdrop");
 let EXR = 1;
-let edit_btn = null;
-let delete_btn = null;
-let edit_close_btn = null;
 let curr_idx = null;
 let prev_view = null;
 let curr_price = null;
@@ -51,8 +57,8 @@ let flights_ToSave = null;
 let saved_Flights = JSON.parse(localStorage.getItem("my_flights")) || [];
 
 const showServerError = () => {
-    loader.classList.add("hidden");
-    loader.classList.remove("loader");
+    result_loader.classList.add("hidden");
+    result_loader.classList.remove("result_loader");
     no_response.classList.add("no_results");
     no_response.classList.remove("hidden");
 }
@@ -189,55 +195,8 @@ const formatResult = async (ele,data) =>{
 };
 
 const renderFlights = (flightList) => {
-    results.innerHTML = "";
-
-    results.innerHTML = `
-        <div id="pick_price" class="hidden">
-            <div class="modal_ticket">
-                <img class="modal_logo airline_logo" id="result_modal_logo" src="" alt="Airline">
-                <div class="modal_dep">
-                    <p class="modal_dep_time" id="result_modal_dep_time"></p>
-                    <p class="modal_dep_airport" id="result_modal_dep_airport"></p>
-                </div>
-                <div class="modal_inbetween">
-                    <p class="modal_flight_len" id="result_modal_flight_len"></p>
-                    <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="modal_inbtw_icon" height="30px" width="120px">
-                    <p class="modal_flight_type" id="result_modal_flight_type"></p>
-                </div>
-                <div class="modal_arr">
-                    <p class="modal_arr_time" id="result_modal_arr_time"></p>
-                    <p class="modal_arr_airport" id="result_modal_arr_airport"></p>
-                </div>
-            </div>
-            <div id="select_price">
-                <button class="close" id="pick_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
-                <div id="results_current_price"></div>
-                <div id="results_your_price">
-                    <label for="picked_price">Pick Your Price</label>
-                    <input type="number" placeholder="Pick Price" id="picked_price">
-                </div>
-                <button id="pick_flight">Pick</button>
-            </div>
-        </div>`;
-
-    document.querySelector("#pick_close").addEventListener("click", () => {
-        document.querySelector("#pick_price").classList.add("hidden");
-        backdrop.classList.add("hidden");
-    });
-
-    document.querySelector("#pick_flight").addEventListener("click", async () => {
-        let desired_price = parseInt(document.querySelector("#picked_price").value);
-        if (isNaN(desired_price) || desired_price <= 0) {
-            document.querySelector("#picked_price").classList.add("invalid_input");
-        } else {
-            flights_ToSave.picked_price = desired_price;
-            flights_ToSave.date = date.value;
-            saved_Flights.push(flights_ToSave);
-            localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
-            document.querySelector("#pick_price").classList.add("hidden");
-            backdrop.classList.add("hidden");
-        }
-    });
+    flight_cards.innerHTML = "";
+    
 
     if(flightList.length === 0) showNoResult();
 
@@ -246,7 +205,6 @@ const renderFlights = (flightList) => {
         result.classList.add("result");
         formatResult(result, flight);
         result.addEventListener("click", async () => {
-            let pick_sec = document.querySelector("#pick_price");
             flights_ToSave = saveFlight(flight);
             
             document.querySelector("#result_modal_logo").src = `https://content.airhex.com/content/logos/airlines_${flights_ToSave.airline}_60_40_r.png`;
@@ -261,10 +219,10 @@ const renderFlights = (flightList) => {
             curr_price = toINR(flight.price.grandTotal);
             document.querySelector("#results_current_price").innerHTML = `<p>Current Lowest Price</p><p id="results_current_lowest_price">${curr_price}</p>`;
 
-            pick_sec.classList.remove("hidden");
+            pick.classList.remove("hidden");
             backdrop.classList.remove("hidden");
         });
-        results.appendChild(result);
+        flight_cards.appendChild(result);
     });
 };
 
@@ -309,7 +267,7 @@ const createResults = async () => {
     if (curr_view !== "results") return;
     EXR = await getExchangeRate();
     if (curr_view !== "results") return;
-    loader.classList.add("hidden");
+    result_loader.classList.add("hidden");
     results.classList.remove("hidden");
     sort_sec.classList.remove("hidden");
     filter_sec.classList.remove("hidden");
@@ -369,86 +327,12 @@ const formatMyFlight = async (ele,data) =>{
 
 const renderMyFlights = () => {
     my_flights.innerHTML = "";
-    my_flights.innerHTML =`<div id="edit" class="hidden">
-            <div class="modal_ticket">
-                <img class="modal_logo airline_logo" id="wl_modal_logo" src="" alt="Airline">
-                <div class="modal_dep">
-                    <p class="modal_dep_time" id="wl_modal_dep_time"></p>
-                    <p class="modal_dep_airport" id="wl_modal_dep_airport"></p>
-                </div>
-
-                <div class="modal_inbetween">
-                    <p class="modal_flight_len" id="wl_modal_flight_len"></p>
-                    <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="modal_inbtw_icon" height="30px" width="120px">
-                    <p class="modal_flight_type" id="id_modal_flight_type"></p>
-                </div>
-
-                <div class="modal_arr">
-                    <p class="modal_arr_time" id="wl_modal_arr_time"></p>
-                    <p class="modal_arr_airport" id="wl_modal_arr_airport"></p>
-                </div>
-            </div>
-            <div id="update">
-                <div class="prices">
-
-                    <div id="watchlist_current_price">
-                    </div>
-            
-                    <div id="watchlist_your_price">
-                    </div>
-
-                    <div id="new_price">
-
-                        <label for="new_picked_price">Update Price</label>
-                        <input type="number" placeholder="Pick Price" id="new_picked_price">
-                    </div>
-                </div>
-
-                <div id="edit_btns">
-
-                    <button id="edit_btn">Edit</button>
-
-                    <button id="delete_btn">Delete</button>
-                </div>
-
-                <button class="close" id="edit_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
-            </div>    
-        </div>`;
-    edit_close_btn = document.querySelector("#edit_close");
-    edit_close_btn.addEventListener("click",()=>{
-        let edit = document.querySelector("#edit");
-        edit.classList.add("hidden");
-        backdrop.classList.add("hidden");
-    })  
-    edit_btn = document.querySelector("#edit_btn");
-    edit_btn.addEventListener("click",()=>{
-        let new_picked_price = document.querySelector("#new_picked_price");
-        if(isNaN(parseInt(new_picked_price.value)) || parseInt(new_picked_price.value)<=0){
-            new_picked_price.classList.add("invalid_input");
-        }else{
-            saved_Flights[curr_idx].picked_price = parseInt(new_picked_price.value);
-            document.querySelector("#edit").classList.add("hidden");
-            localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
-            if(saved_Flights.length==0) showNoWatchlist();
-            renderMyFlights(saved_Flights);
-            backdrop.classList.add("hidden");
-        } 
-    })
-    delete_btn = document.querySelector("#delete_btn");
-    delete_btn.addEventListener("click",()=>{
-        saved_Flights.splice(curr_idx,1);
-        backdrop.classList.add("hidden");
-        if(saved_Flights.length==0) showNoWatchlist();
-        renderMyFlights(saved_Flights);
-        document.querySelector("#edit").classList.add("hidden");
-        localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
-    })
-    saved_Flights.forEach((flight)=>{
+    saved_Flights.forEach((flight,index)=>{
         let my_flight = document.createElement("div");
         my_flight.classList.add("myFlight");
         formatMyFlight(my_flight,flight);
         my_flight.addEventListener("click",()=>{
-            let edit = document.querySelector("#edit");
+            curr_idx = index;
             edit.classList.remove("hidden");
             backdrop.classList.remove("hidden");
             edit.classList.add("edit");
@@ -462,6 +346,7 @@ const renderMyFlights = () => {
             html = `<p >Your Picked Price</p>
             <p id="curr_picked_price">Rs.${picked_price}</p>`;
             parent.innerHTML = html;
+            new_price_input.value = "";
             document.querySelector("#wl_modal_logo").src = `https://content.airhex.com/content/logos/airlines_${flight.airline}_60_40_r.png`;
             document.querySelector("#wl_modal_dep_airport").innerText = flight.departure_airport;
             document.querySelector("#wl_modal_arr_airport").innerText = flight.arrival_airport;
@@ -474,12 +359,15 @@ const renderMyFlights = () => {
     })
 };
 const createWatchlist = async () => {
+    my_flights.innerHTML = "";
     if(saved_Flights.length==0) showNoWatchlist();
     else{
         let token = await getAccessToken();
         if (curr_view !== "watchlist") return;
         await updatePrice(token);
         if (curr_view !== "watchlist") return;
+        watchlist_loader.classList.add("hidden");
+        watchlist_loader.classList.remove("watchlist_loader");
         renderMyFlights(saved_Flights);
     }
 }
@@ -511,8 +399,10 @@ const homeToResults = async() => {
         no_results.classList.add("hidden");
         prev_view = curr_view;
         curr_view = "results";
-        loader.classList.remove("hidden");
-        loader.classList.add("loader");
+        result_loader.classList.remove("hidden");
+        result_loader.classList.add("result_loader");
+        watchlist_loader.classList.add("hidden");
+        watchlist_loader.classList.remove("watchlist_loader");
         results.classList.add("hidden");
         sort_sec.classList.remove("hidden");
         filter_sec.classList.remove("hidden");
@@ -530,8 +420,10 @@ const toHome = () => {
     no_results.classList.add("hidden");
     sort_sec.classList.add("hidden");
     filter_sec.classList.add("hidden");
-    loader.classList.add("hidden");
-    loader.classList.remove("loader");
+    result_loader.classList.add("hidden");
+    result_loader.classList.remove("result_loader");
+    watchlist_loader.classList.add("hidden");
+    watchlist_loader.classList.remove("watchlist_loader");
     no_response.classList.remove("no_results");
     no_response.classList.add("hidden");
     prev_view = curr_view;
@@ -543,10 +435,12 @@ const toWatchlist = async () => {
     results.classList.add("hidden");
     header.classList.remove("searching");
     header.classList.add("hidden");
-    loader.classList.add("hidden");
-    loader.classList.remove("loader");
+    result_loader.classList.add("hidden");
+    result_loader.classList.remove("result_loader");
     no_watchlisted_flights.classList.add("hidden");
     no_watchlisted_flights.classList.remove("no_results");
+    watchlist_loader.classList.remove("hidden");
+    watchlist_loader.classList.add("watchlist_loader");
     no_results.classList.add("hidden");
     no_results.classList.remove("no_results");
     prev_view = curr_view;
@@ -563,7 +457,48 @@ const back = () =>{
         default : toHome();
     };
 }
+pick_close_btn.addEventListener("click", () => {
+    pick.classList.add("hidden");
+    backdrop.classList.add("hidden");
+});
 
+pick_btn.addEventListener("click", async () => {
+    let desired_price = parseInt(document.querySelector("#picked_price").value);
+    if (isNaN(desired_price) || desired_price <= 0) {
+        document.querySelector("#picked_price").classList.add("invalid_input");
+    } else {
+        flights_ToSave.picked_price = desired_price;
+        flights_ToSave.date = date.value;
+        saved_Flights.push(flights_ToSave);
+        localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
+        pick.classList.add("hidden");
+        backdrop.classList.add("hidden");
+    }
+});
+edit_close_btn.addEventListener("click",()=>{
+    edit.classList.add("hidden");
+    backdrop.classList.add("hidden");
+});
+edit_btn.addEventListener("click",()=>{
+    if(isNaN(parseInt(new_price_input.value)) || parseInt(new_price_input.value)<=0){
+        new_picked_price.classList.add("invalid_input");
+    }else{
+        saved_Flights[curr_idx].picked_price = parseInt(new_price_input.value);
+        edit.classList.add("hidden");
+        localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
+        if(saved_Flights.length==0) showNoWatchlist();
+        renderMyFlights(saved_Flights);
+        backdrop.classList.add("hidden");
+    } 
+});
+delete_btn.addEventListener("click",()=>{
+    saved_Flights.splice(curr_idx,1);
+    backdrop.classList.add("hidden");
+    if(saved_Flights.length==0) showNoWatchlist();
+    renderMyFlights(saved_Flights);
+    edit.classList.add("hidden");
+    localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
+});
 sort_type.addEventListener("change", sortAndFilter);
 
 filter_type.addEventListener("change", sortAndFilter);

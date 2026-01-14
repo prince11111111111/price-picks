@@ -121,7 +121,7 @@ header.searching #flight_details{
     text-transform: uppercase;
     letter-spacing: 2px;
 }
-#results{
+#flight_cards, #results{
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -456,7 +456,10 @@ img{
     width: 25px;
     height: 25px;
 }
-.loader {
+#watchlist_loader,#result_loader{
+    margin-top: 15%;
+}
+.result_loader, .watchlist_loader {
     width: 100%;
     height: 300px;
     display: flex;
@@ -465,7 +468,7 @@ img{
     position: relative;
     overflow: hidden;
 }
-.loader_content {
+.result_loader_content, .watchlist_loader_content{
     text-align: center;
     width: 100%;
 }
@@ -475,8 +478,13 @@ img{
     position: relative;
     animation: flyAcross 2.5s linear infinite;
 }
-
-#loader p {
+#pulsing_heart{
+    height: 100px;
+    width: 100px;
+    position: relative;
+    animation: pulse 2s linear infinite;
+}
+#loader p ,#watchlist_loader p{
     font-family: 'Quicksand', sans-serif;
     color: #091540;
     font-size: 1.2rem;
@@ -496,6 +504,24 @@ img{
     }
     100% {
         transform: translateX(150%); 
+        opacity: 0;
+    }
+}
+@keyframes pulse {
+    0% {
+        height: 100px;
+        width: 100px; 
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        height: 200px;
+        width: 200px; 
         opacity: 0;
     }
 }

@@ -75,15 +75,44 @@
         </section>
     </header>
 
-    <div id="results" class="hidden"></div>
+    <div id="results" class="hidden">
+        <div id="flight_cards"></div>
+        <div id="pick_price" class="hidden">
+            <div class="modal_ticket">
+                <img class="modal_logo airline_logo" id="result_modal_logo" src="" alt="Airline">
+                <div class="modal_dep">
+                    <p class="modal_dep_time" id="result_modal_dep_time"></p>
+                    <p class="modal_dep_airport" id="result_modal_dep_airport"></p>
+                </div>
+                <div class="modal_inbetween">
+                    <p class="modal_flight_len" id="result_modal_flight_len"></p>
+                    <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="modal_inbtw_icon" height="30px" width="120px">
+                    <p class="modal_flight_type" id="result_modal_flight_type"></p>
+                </div>
+                <div class="modal_arr">
+                    <p class="modal_arr_time" id="result_modal_arr_time"></p>
+                    <p class="modal_arr_airport" id="result_modal_arr_airport"></p>
+                </div>
+            </div>
+            <div id="select_price">
+                <button class="close" id="pick_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
+                <div id="results_current_price"></div>
+                <div id="results_your_price">
+                    <label for="picked_price">Pick Your Price</label>
+                    <input type="number" placeholder="Pick Price" id="picked_price">
+                </div>
+                <button id="pick_flight">Pick</button>
+            </div>
+        </div>
+    </div>
     <div id="no_results" class = "hidden">
         <img src="icons/cross_ic.png" alt="Cross" class="cross">
         No Results Found
         <button id="no_results_btn">Close</button>
     </div>
 
-    <div id="loader" class="hidden">
-        <div class="loader_content">
+    <div id="result_loader" class="hidden">
+        <div class="result_loader_content">
             <img src="icons/plane_ic.png" alt="Loading..." id="flying_plane">
             <p>Getting Flights<span class="dots">...</span></p>
         </div>
@@ -101,11 +130,61 @@
         </div>
 
         <div id="my_flights"></div>
+        <div id="edit" class="hidden">
+            <div class="modal_ticket">
+                <img class="modal_logo airline_logo" id="wl_modal_logo" src="" alt="Airline">
+                <div class="modal_dep">
+                    <p class="modal_dep_time" id="wl_modal_dep_time"></p>
+                    <p class="modal_dep_airport" id="wl_modal_dep_airport"></p>
+                </div>
 
+                <div class="modal_inbetween">
+                    <p class="modal_flight_len" id="wl_modal_flight_len"></p>
+                    <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="modal_inbtw_icon" height="30px" width="120px">
+                    <p class="modal_flight_type" id="wl_modal_flight_type"></p>
+                </div>
+
+                <div class="modal_arr">
+                    <p class="modal_arr_time" id="wl_modal_arr_time"></p>
+                    <p class="modal_arr_airport" id="wl_modal_arr_airport"></p>
+                </div>
+            </div>
+            <div id="update">
+                <div class="prices">
+
+                    <div id="watchlist_current_price">
+                    </div>
+            
+                    <div id="watchlist_your_price">
+                    </div>
+
+                    <div id="new_price">
+
+                        <label for="new_picked_price">Update Price</label>
+                        <input type="number" placeholder="Pick Price" id="new_picked_price">
+                    </div>
+                </div>
+
+                <div id="edit_btns">
+
+                    <button id="edit_btn">Edit</button>
+
+                    <button id="delete_btn">Delete</button>
+                </div>
+
+                <button class="close" id="edit_close"><img src="icons/close_ic.png" alt="Close" id="cross_icon"></button>
+            </div>    
+        </div>
         <div id="no_watchlisted_flights" class = "hidden" >
             <img src="icons/cross_ic.png" alt="Cross" class="cross">
             No Watchlisted Flights
             <button id="no_watchlisted_flights_btn">Close</button>
+        </div>
+        <div id="watchlist_loader" class="hidden">
+            <div class="watchlist_loader_content">
+                <img src="icons/watchlist_ic.png" alt="Loading..." id="pulsing_heart">
+                <p>Getting Your Flights<span class="dots">...</span></p>
+            </div>
         </div>
     </section>
 
@@ -113,7 +192,7 @@
 
     <div id="no_response" class = "hidden" >
         <img src="icons/cross_ic.png" alt="Cross" class="cross">
-        <span>Something Unexpected Happeneded 
+        <span>Something Unexpected Happened 
         Try Again.</span>
         <button id="no_response_btn">Close</button>
     </div>
