@@ -18,9 +18,8 @@ const from_place = document.querySelector("#from_place");
 const to_place = document.querySelector("#to_place");
 const date = document.querySelector("#from_date");
 const airport_options = document.querySelector("#airport_suggestions");
-const sort_sec = document.querySelector("#sort")
+const sort_and_filter_sec = document.querySelector("#sortandfilter");
 const sort_type = document.querySelector("#sort_select");
-const filter_sec = document.querySelector("#filter")
 const filter_type = document.querySelector("#filter_select");
 const no_results = document.querySelector("#no_results");
 const no_results_btn = document.querySelector("#no_results_btn");
@@ -109,7 +108,13 @@ const getFlights = async (token, origin, destination, date) => {
             let data = await response.json();
             flights = data.data;
             console.log(flights);
-        }else showNoResult();
+        }else{
+        let errorBody = await response.text(); // Read the specific error message
+        console.error("❌ API Error Details:", errorBody);
+        console.error("❌ Status Code:", response.status);
+        showServerError();
+        return; // Stop here
+    }
     }catch(error){
         showServerError();
     }
@@ -176,7 +181,7 @@ const formatResult = async (ele,data) =>{
 
             <div class="inbetween">
                 <p class="flight_length">${formatLength(data.itineraries[0].duration)}</p>
-                <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
+                <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="inbetween_icon">
                 <p class="flight_type"> Stops : ${stops}</p>
             </div>
 
@@ -262,6 +267,8 @@ const sortAndFilter = () => {
 
 const createResults = async () => {
     let token = await getAccessToken();
+    console.log(token,typeof(token));
+    if (!token) return;
     if (curr_view !== "results") return;
     await getFlights(token, from_place.value, to_place.value, date.value);
     if (curr_view !== "results") return;
@@ -269,8 +276,8 @@ const createResults = async () => {
     if (curr_view !== "results") return;
     result_loader.classList.add("hidden");
     results.classList.remove("hidden");
-    sort_sec.classList.remove("hidden");
-    filter_sec.classList.remove("hidden");
+    sort_and_filter_sec.classList.remove("hidden");
+    sort_and_filter_sec.classList.add("sortandfilter");
 
     sortAndFilter();
 };
@@ -303,7 +310,7 @@ const formatMyFlight = async (ele,data) =>{
 
             <div class="inbetween">
                 <p class="flight_length">${data.flight_length}</p>
-                <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="inbetween_icon" height="30px" width="120px">
+                <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="inbetween_icon" >
                 <p class="flight_type"> Stops : ${data.stops}</p>
             </div>
 
@@ -404,8 +411,8 @@ const homeToResults = async() => {
         watchlist_loader.classList.add("hidden");
         watchlist_loader.classList.remove("watchlist_loader");
         results.classList.add("hidden");
-        sort_sec.classList.remove("hidden");
-        filter_sec.classList.remove("hidden");
+        sort_and_filter_sec.classList.remove("hidden");
+        sort_and_filter_sec.classList.add("sortandfilter");
         await createResults();
     }
 
@@ -418,8 +425,8 @@ const toHome = () => {
     watchList.classList.add("hidden");
     no_results.classList.remove("no_results");
     no_results.classList.add("hidden");
-    sort_sec.classList.add("hidden");
-    filter_sec.classList.add("hidden");
+    sort_and_filter_sec.classList.add("hidden");
+    sort_and_filter_sec.classList.remove("sortandfilter");
     result_loader.classList.add("hidden");
     result_loader.classList.remove("result_loader");
     watchlist_loader.classList.add("hidden");

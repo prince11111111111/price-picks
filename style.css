@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 *{
     margin: 0%;
     padding: 0%;
     color: #091540;
     box-sizing: border-box;
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.5;
 } 
 .hidden{
     display: none;
@@ -19,8 +21,9 @@ body{
     width: 75px;
 }
 img{
-    height: 42px;
-    width: 42px;
+    height: 47px;
+    width: 47px;
+    cursor: pointer;
 }
 header{
     display: flex;
@@ -35,46 +38,67 @@ header.searching{
     justify-content: flex-start;
 }
 header.searching #search_sec{
-    margin:0;
+    height: 10vmin;
+    margin:1.5vmin;
     padding:5px;
     flex-direction: row;
     width: 100%;
-    justify-content: center;
+    justify-content: left;
     gap:0rem;
-    border-radius:0 ;
+    border-radius:0.5vmin;
 }
 header.searching #flight_details label{
-    font-size: 0.7rem;
+    font-size: 1rem;
     font-weight: bolder;
 }
 header.searching #flight_details input{
-    font-size: 1.2rem;
-    padding: 2px;
+    font-size: 1rem;
+    padding: 1vh;
 }
 header.searching #search_btn{
-    height: 40px;
-    width: 200px;
-    border: 0;
-    border-radius: 50px;
+    height: 5vmin;
+    width: 15%;
+    border: none;
+    border-radius: 1vmin;
     margin:0.1rem;
-    font-size: 0.7rem;
+    font-size: 1rem;
     font-weight: bolder;
 }
 header.searching #flight_details{
-    justify-content: space-between;
-    width: 60%;
+    width: 50%;
+    justify-content: space-evenly;
     padding: 0 2vh 0 2vh;
+}
+
+.sortandfilter{
+    width: 35%;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 1vmin;
+}
+.sortandfilter label{
+    font-size: 0.7rem;
+    font-weight: bolder;
+}
+.sortandfilter select{
+    font-size: 0.7rem;
+    padding: 1vh;
+    border: none;
+    border-radius: 1vmin;
+    cursor: pointer;
 }
 #search_sec{
     width: 80%;
-    padding: 70px;
+    padding: 5vmin;
     display: flex;
     flex-direction: column;
     background-color: #7692FF;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    border-radius: 5vmin;
-    margin: auto 0;
+    border-radius: 1vmin;
+    gap: 2vmin;
+    margin: auto;
     
 }
 #flight_details{
@@ -91,7 +115,7 @@ header.searching #flight_details{
 #flight_details input {
     font-size: 1.7rem;
     padding: 20px;
-    border-radius: 15px;
+    border-radius: 1vmin;
     border: none;
     width: 100%;
 }
@@ -99,7 +123,7 @@ header.searching #flight_details{
     height: 100px;
     width: 300px;
     border: 0;
-    border-radius: 50px;
+    border-radius: 1vmin;
     cursor: pointer;
     margin:1rem;
     font-size: 2rem;
@@ -107,6 +131,7 @@ header.searching #flight_details{
 }
 #header{
     width: 100%;
+    height: 5vh;
     display: flex;
     justify-content: space-between;
 }
@@ -134,8 +159,8 @@ header.searching #flight_details{
     align-items: center;
     background-color: #A6B8FF;
     margin: 2vh;
-    border-radius: 15px;
-    width:50%;
+    border-radius: 1vmin;
+    width:80%;
 }
 #watchlist_header{
     display: flex;
@@ -159,39 +184,40 @@ header.searching #flight_details{
     width:50%;
 }
 .airline_logo{
-    margin-left: 10px;
-    width: 100px;
+    margin: 2vmin;
+    width: 15%;
 }
 
-.departure{
-    display: inline-flex;
+.departure , .arrival{
+    width: 15%;
+    display: flex;
     font-size: 1.5rem;
     font-weight: bolder;
     justify-content: center;
+    align-items: center;
     flex-direction: column;
     padding: 1rem;
 }
 .inbetween{
-    display: inline-flex;
+    width: 15%;
+    display: flex;
     font-size: 1rem;
     font-weight: bold;
     justify-content: center;
+    align-items: center;
     text-align: center;
     flex-direction: column;
 }
-.arrival{
-    display: inline-flex;
-    font-size: 1.5rem;
-    font-weight: bolder;
-    justify-content: center;
-    flex-direction: column;
-    padding: 1rem;
+.inbetween_icon{
+    width: 100%;
 }
 .price{
-    display: inline-flex;
+    width: 20%;
+    display: flex;
     font-size: 1.5rem;
     font-weight: bolder;
     justify-content: center;
+    align-items: center;
     flex-direction: column;
     padding: 1rem;
     margin-left: 2rem;
@@ -202,7 +228,8 @@ header.searching #flight_details{
     align-items: center;
 }
 .pick_btn{
-    border-radius: 15px;
+    width: 100%;
+    border-radius: 1vmin;
     font-size: 1.5rem;
     border: 0;
     cursor: pointer;
@@ -434,14 +461,9 @@ header.searching #flight_details{
     border-style: solid;
     border-color: #ee5253;
 }
-h1{
+h1,h2{
     cursor: pointer;
-}
-h2{
-    cursor: pointer;
-}
-img{
-    cursor: pointer;
+    line-height: normal;
 }
 .close{
     position: absolute;
@@ -457,7 +479,8 @@ img{
     height: 25px;
 }
 #watchlist_loader,#result_loader{
-    margin-top: 15%;
+    margin-top: 8%;
+    width: 100%;
 }
 .result_loader, .watchlist_loader {
     width: 100%;
@@ -476,13 +499,13 @@ img{
 #flying_plane {
     width: 100px; 
     position: relative;
-    animation: flyAcross 2.5s linear infinite;
+    animation: flyAcross 5s linear infinite;
 }
 #pulsing_heart{
     height: 100px;
     width: 100px;
     position: relative;
-    animation: pulse 2s linear infinite;
+    animation: pulse 2s ease-in-out infinite;
 }
 #loader p ,#watchlist_loader p{
     font-family: 'Quicksand', sans-serif;
@@ -493,7 +516,7 @@ img{
 }
 @keyframes flyAcross {
     0% {
-        transform: translateX(-150%);
+        transform: translateX(-650%);
         opacity: 0;
     }
     10% {
@@ -503,7 +526,7 @@ img{
         opacity: 1;
     }
     100% {
-        transform: translateX(150%); 
+        transform: translateX(650%); 
         opacity: 0;
     }
 }
