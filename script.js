@@ -9,7 +9,6 @@ const pick = document.querySelector("#pick_price");
 const edit = document.querySelector("#edit");
 const new_price_input = document.querySelector("#new_picked_price");
 const heading = document.querySelector("h1");
-const watchlist_title = document.querySelector("h2");
 const watchList = document.querySelector("#watchlist_sec");
 const watchList_btn = document.querySelector("#watchlist_btn");
 const my_flights = document.querySelector("#my_flights");
@@ -59,6 +58,7 @@ const showServerError = () => {
     result_loader.classList.add("hidden");
     result_loader.classList.remove("result_loader");
     no_response.classList.add("no_results");
+    backdrop.classList.remove("hidden");
     no_response.classList.remove("hidden");
 }
 
@@ -123,11 +123,13 @@ const getFlights = async (token, origin, destination, date) => {
 const showNoResult = () => {
     no_results.classList.remove("hidden");
     no_results.classList.add("no_results");
+    backdrop.classList.remove("hidden");
 };
 
 const showNoWatchlist = () => {
     no_watchlisted_flights.classList.remove("hidden");
     no_watchlisted_flights.classList.add("no_results");
+    backdrop.classList.remove("hidden");
 };
 
 const formatTime = (str) => {
@@ -225,6 +227,7 @@ const renderFlights = (flightList) => {
             document.querySelector("#results_current_price").innerHTML = `<p>Current Lowest Price</p><p id="results_current_lowest_price">${curr_price}</p>`;
 
             pick.classList.remove("hidden");
+            pick.classList.add("pick");
             backdrop.classList.remove("hidden");
         });
         flight_cards.appendChild(result);
@@ -261,6 +264,7 @@ const sortAndFilter = () => {
         processed_flights.sort((a, b) => getDurationMinutes(a.itineraries[0].duration) - getDurationMinutes(b.itineraries[0].duration));
     }
     no_results.classList.add("hidden");
+    backdrop.classList.add("hidden");
     no_results.classList.remove("no_results");
     renderFlights(processed_flights);
 };
@@ -275,6 +279,7 @@ const createResults = async () => {
     EXR = await getExchangeRate();
     if (curr_view !== "results") return;
     result_loader.classList.add("hidden");
+    result_loader.classList.remove("result_loader");
     results.classList.remove("hidden");
     sort_and_filter_sec.classList.remove("hidden");
     sort_and_filter_sec.classList.add("sortandfilter");
@@ -403,6 +408,7 @@ const homeToResults = async() => {
         header.classList.add("searching");
         results.classList.remove("hidden");
         no_results.classList.remove("no_results");
+        backdrop.classList.add("hidden");
         no_results.classList.add("hidden");
         prev_view = curr_view;
         curr_view = "results";
@@ -424,6 +430,7 @@ const toHome = () => {
     results.classList.add("hidden");
     watchList.classList.add("hidden");
     no_results.classList.remove("no_results");
+    backdrop.classList.add("hidden");
     no_results.classList.add("hidden");
     sort_and_filter_sec.classList.add("hidden");
     sort_and_filter_sec.classList.remove("sortandfilter");
@@ -432,6 +439,7 @@ const toHome = () => {
     watchlist_loader.classList.add("hidden");
     watchlist_loader.classList.remove("watchlist_loader");
     no_response.classList.remove("no_results");
+    backdrop.classList.add("hidden");
     no_response.classList.add("hidden");
     prev_view = curr_view;
     curr_view = "home";
@@ -446,10 +454,12 @@ const toWatchlist = async () => {
     result_loader.classList.remove("result_loader");
     no_watchlisted_flights.classList.add("hidden");
     no_watchlisted_flights.classList.remove("no_results");
+    backdrop.classList.add("hidden");
     watchlist_loader.classList.remove("hidden");
     watchlist_loader.classList.add("watchlist_loader");
     no_results.classList.add("hidden");
     no_results.classList.remove("no_results");
+    backdrop.classList.add("hidden");
     prev_view = curr_view;
     curr_view = "watchlist";
     createWatchlist();
@@ -467,6 +477,7 @@ const back = () =>{
 pick_close_btn.addEventListener("click", () => {
     pick.classList.add("hidden");
     backdrop.classList.add("hidden");
+    pick.classList.remove("pick");
 });
 
 pick_btn.addEventListener("click", async () => {
@@ -514,10 +525,10 @@ watchList_btn.addEventListener("click",toWatchlist);
 search_btn.addEventListener("click",homeToResults);
 no_results_btn.addEventListener("click",()=>{
     no_results.classList.remove("no_results");
+    backdrop.classList.add("hidden");
     no_results.classList.add("hidden");
 });
 no_watchlisted_flights_btn.addEventListener("click",back);
 no_response_btn.addEventListener("click",toHome);
 heading.addEventListener("click",toHome);
-watchlist_title.addEventListener("click",renderMyFlights);
 back_btn.addEventListener("click",back);

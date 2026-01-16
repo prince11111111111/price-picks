@@ -181,10 +181,15 @@ header.searching #flight_details{
     background-color: #A6B8FF;
     margin-top: 4vh;
     border-radius: 15px;
-    width:50%;
+    width:80%;
+    height: 20vh;
+}
+.myFlight .arrival,.myFlight .departure,.myFlight .inbetween{
+    width: 15%;
 }
 .airline_logo{
     margin: 2vmin;
+    align-self: center;
     width: 15%;
 }
 
@@ -208,11 +213,12 @@ header.searching #flight_details{
     text-align: center;
     flex-direction: column;
 }
-.inbetween_icon{
+.inbetween_icon,  .modal_inbtw_icon{
     width: 100%;
 }
 .price{
-    width: 20%;
+    width: 30%;
+    height: 60%;
     display: flex;
     font-size: 1.5rem;
     font-weight: bolder;
@@ -220,12 +226,17 @@ header.searching #flight_details{
     align-items: center;
     flex-direction: column;
     padding: 1rem;
-    margin-left: 2rem;
 }
 .edit_sec{
+    width: 30%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-evenly;
+}
+.edit_sec .price{
+    width: 100%;
 }
 .pick_btn{
     width: 100%;
@@ -235,28 +246,28 @@ header.searching #flight_details{
     cursor: pointer;
 }
 .edit_btns{
-    border-radius: 15px;
-    margin-bottom: 10px;
+    border-radius: 1vmin;
     width: 90%;
+    height: 30%;
     font-size: 1.5rem;
     border: 0;
     cursor: pointer;
 }
 .pick{
     width: 80%;
-    height: 60vh;
+    height: 42vh;
     display:flex;
     flex-direction: column;
     justify-content: space-around;
-    background-color: #A6B8FF;
     align-items: center;
 }
 .modal_ticket{
-    width: 100%;
-    height: 29vh;
+    width: 70%;
+    height: 18vh;
     display:flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     background-color: #7692FF;
+    border-radius: 1vmin;
     align-items: center;
     font-size: 1.5rem;
     font-weight: bolder;
@@ -265,14 +276,16 @@ header.searching #flight_details{
     width: 25%;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 #select_price{
     width: 100%;
-    height: 29vh;
+    height: 20vh;
     display:flex;
     flex-direction: row;
     justify-content: space-between;
     background-color: #7692FF;
+    border-radius: 1vmin;
     align-items: center;
     font-size: 1.5rem;
     font-weight: bolder;
@@ -296,9 +309,9 @@ header.searching #flight_details{
     width: 33%;
 }
 #results_your_price input {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     padding: 5px;
-    border-radius: 15px;
+    border-radius: 1vmin;
     border: none;
     width: 100%;
 }
@@ -308,25 +321,25 @@ header.searching #flight_details{
     font-size: 1.5rem;
     margin-right: 20px;
     width: 25%;
-    height: 50px;
+    height: 10vh;
 }
 .edit{
     width: 80%;
-    height: 60vh;
+    height: 45vh;
     display:flex;
     flex-direction: column;
-    justify-content: space-around;
-    background-color:#A6B8FF;
+    justify-content: space-between;
     align-items: center;
 }
 #update{
     width: 100%;
-    height: 29vh;
+    height: 25vh;
     display:flex;
     flex-direction: column;
     justify-content: space-between;
     background-color: #7692FF;
     align-items: center;
+    border-radius: 1vmin;
     font-size: 1.5rem;
     font-weight: bolder;
 }
@@ -337,63 +350,34 @@ header.searching #flight_details{
     width: 100%;
     
 }
-.prices #watchlist_current_price{
+.prices #watchlist_current_price, .prices #watchlist_your_price, #new_price{
     display: flex;
     flex-direction: column;
-    align-items:flex-start;
-    justify-content: center;
-    text-align: left;
-    height: 100%;
-    width: 30%;
-}
-.prices #watchlist_your_price{
-    display: flex;
-    flex-direction: column;
-    align-items:flex-start;
-    justify-content: center;
-    text-align: left;
-    height: 100%;
-    width: 30%;
-}
-#new_price{
-    display: flex;
-    flex-direction: column;
-    align-items:flex-start;
+    align-items:center;
     justify-content: center;
     text-align: left;
     height: 100%;
     width: 30%;
 }
 #new_price input {
-    align-items:flex-start;
     padding: 20px;
-    border-radius: 15px;
+    border-radius: 1vmin;
     border: none;
     width: 100%;
 }
 #edit_btns{
-    border-radius: 15px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     font-size: 1.5rem;
     width: 100%;
     height: 100px;
     cursor: pointer;
 }
-#edit_btn{
+#edit_btn, #delete_btn{
     height: 50px;
     width: 40%;
-    border-radius: 15px;
     border: 0;
-    margin:2vh;
-    font-size: 1rem;
-    cursor: pointer;
-}
-#delete_btn{
-    height: 50px;
-    width: 40%;
-    border-radius: 15px;
-    border: 0;
+    border-radius: 1vmin;
     margin:2vh;
     font-size: 1rem;
     cursor: pointer;
@@ -408,7 +392,6 @@ header.searching #flight_details{
     transform: translate(-50%, -50%); 
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     z-index: 1000;
-    background: rgba(166, 184, 255, 0.95);
 }
 .green{
     background-color: forestgreen;
@@ -439,7 +422,7 @@ header.searching #flight_details{
     height: 200px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
     font-size: 1rem;
     border-radius: 15px;
@@ -447,13 +430,17 @@ header.searching #flight_details{
     border-width: 2px;
     border-color: #091540;
     background-color: #7692FF;
+    z-index: 1000;
+}
+.no_results span{
+    text-align: center;
 }
 #no_results_btn, #no_watchlisted_flights_btn, #no_response_btn{
-    padding:2px;
-    height: 30px;
-    width: 60px;
+    height: 20%;
+    width: 40%;
     font-size: 1.2rem;
-    border-radius: 15px;
+    text-align: center;
+    border-radius: 1vmin;
     cursor: pointer;
 }
 #flight_details input.invalid_input, #new_picked_price.invalid_input {
@@ -466,6 +453,9 @@ h1,h2{
     line-height: normal;
 }
 .close{
+    width: 25px;
+    height: 25px;
+    justify-content: center;
     position: absolute;
     top: 10px;
     right: 10px;
@@ -473,6 +463,8 @@ h1,h2{
     border: none;
     cursor: pointer;
     z-index: 1001;
+    background-color: #7692FF;
+    border-radius: 50%;
 }
 #cross_icon {
     width: 25px;
