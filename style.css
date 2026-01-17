@@ -162,10 +162,17 @@ header.searching #flight_details{
     border-radius: 1vmin;
     width:80%;
 }
-#watchlist_header{
+#watchlist_header, #history_header{
     display: flex;
     justify-content: space-between;
     font-size: larger;
+}
+#delete_all{
+    height: 2.5vmax;
+    width: 5vmax;
+    margin:3vmin;
+    border: none;
+    border-radius: 1vmin;
 }
 #my_flights{
     display: flex;
@@ -414,6 +421,12 @@ header.searching #flight_details{
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
 }
+.watchlist_btn, .history_btn{
+    display: flex;
+    justify-content: space-between;
+    gap:3vmin;
+    align-items: center;
+}
 .no_results{
     position: fixed;
     top:37%;
@@ -435,7 +448,7 @@ header.searching #flight_details{
 .no_results span{
     text-align: center;
 }
-#no_results_btn, #no_watchlisted_flights_btn, #no_response_btn{
+#no_results_btn, #no_watchlisted_flights_btn, #no_response_btn, #no_past_flights_btn{
     height: 20%;
     width: 40%;
     font-size: 1.2rem;
@@ -470,11 +483,11 @@ h1,h2{
     width: 25px;
     height: 25px;
 }
-#watchlist_loader,#result_loader{
+#watchlist_loader,#result_loader, #past_loader{
     margin-top: 8%;
     width: 100%;
 }
-.result_loader, .watchlist_loader {
+.result_loader, .watchlist_loader, .past_loader {
     width: 100%;
     height: 300px;
     display: flex;
@@ -483,7 +496,7 @@ h1,h2{
     position: relative;
     overflow: hidden;
 }
-.result_loader_content, .watchlist_loader_content{
+.result_loader_content, .watchlist_loader_content, .past_loader_content{
     text-align: center;
     width: 100%;
 }
@@ -493,13 +506,18 @@ h1,h2{
     position: relative;
     animation: flyAcross 5s linear infinite;
 }
+#flying_plane_back {
+    width: 100px; 
+    position: relative;
+    animation: flyBack 5s linear infinite;
+}
 #pulsing_heart{
     height: 100px;
     width: 100px;
     position: relative;
     animation: pulse 2s ease-in-out infinite;
 }
-#loader p ,#watchlist_loader p{
+#loader p ,#watchlist_loader p, #past_loader p{
     font-family: 'Quicksand', sans-serif;
     color: #091540;
     font-size: 1.2rem;
@@ -519,6 +537,22 @@ h1,h2{
     }
     100% {
         transform: translateX(650%); 
+        opacity: 0;
+    }
+}
+@keyframes flyBacl {
+    0% {
+        transform: translateX(650%);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-650%); 
         opacity: 0;
     }
 }

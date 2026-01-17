@@ -11,8 +11,9 @@ const new_price_input = document.querySelector("#new_picked_price");
 const heading = document.querySelector("h1");
 const watchList = document.querySelector("#watchlist_sec");
 const watchList_btn = document.querySelector("#watchlist_btn");
+const watchList_title = document.querySelector("h2");
 const my_flights = document.querySelector("#my_flights");
-const back_btn = document.querySelector("#back_btn");
+const back_btn = document.querySelectorAll(".back_btn");
 const from_place = document.querySelector("#from_place");
 const to_place = document.querySelector("#to_place");
 const date = document.querySelector("#from_date");
@@ -31,7 +32,15 @@ const pick_close_btn = document.querySelector("#pick_close");
 const edit_close_btn = document.querySelector("#edit_close");
 const edit_btn = document.querySelector("#edit_btn");
 const delete_btn = document.querySelector("#delete_btn");
+const home_btn = document.querySelectorAll(".home_btn");
+const history_btn = document.querySelector("#history_btn");
+const history_sec = document.querySelector("#history_sec");
+const past_flights_sec = document.querySelector("#past_flights");
+const delete_sec = document.querySelector("#delete");
+const no_past_flights = document.querySelector("#no_past_flights");
+const no_past_flights_btn = document.querySelector("#no_past_flights_btn");
 const backdrop = document.querySelector("#modal_backdrop");
+const today = new Date().toISOString().split('T')[0];
 let EXR = 1;
 let curr_idx = null;
 let prev_view = null;
@@ -53,6 +62,16 @@ let flights = [];
 let flights_ToSave = null;
 
 let saved_Flights = JSON.parse(localStorage.getItem("my_flights")) || [];
+let past_flights  = JSON.parse(localStorage.getItem("flight_history")) || [];
+
+let active_flights = saved_Flights.filter(flight => flight.date >= today);
+let new_expired = saved_Flights.filter(flight => flight.date < today);
+if (new_expired.length > 0) {
+    past_flights = [...past_flights, ...new_expired];
+    saved_Flights = active_flights;
+    localStorage.setItem("flight_history", JSON.stringify(past_flights));
+    localStorage.setItem("my_flights", JSON.stringify(active_flights));
+}
 
 const showServerError = () => {
     result_loader.classList.add("hidden");
@@ -109,11 +128,11 @@ const getFlights = async (token, origin, destination, date) => {
             flights = data.data;
             console.log(flights);
         }else{
-        let errorBody = await response.text(); // Read the specific error message
+        let errorBody = await response.text();
         console.error("❌ API Error Details:", errorBody);
         console.error("❌ Status Code:", response.status);
         showServerError();
-        return; // Stop here
+        return;
     }
     }catch(error){
         showServerError();
@@ -131,7 +150,11 @@ const showNoWatchlist = () => {
     no_watchlisted_flights.classList.add("no_results");
     backdrop.classList.remove("hidden");
 };
-
+const showNoPast = () => {
+    no_past_flights.classList.remove("hidden");
+    no_past_flights.classList.add("no_results");
+    backdrop.classList.remove("hidden");
+};
 const formatTime = (str) => {
     return str.split('T')[1].slice(0,5);
 };
@@ -150,6 +173,7 @@ const saveFlight = (arr) => {
         "arrival_airport" : arr.itineraries[0].segments[stops].arrival.iataCode,
         "arrival_time" : formatTime(arr.itineraries[0].segments[stops].arrival.at),
         "price" : toINR(arr.price.grandTotal),
+        "lowest_price" : toINR(arr.price.grandTotal),
         "stops" : stops
     };
 };
@@ -271,9 +295,9 @@ const sortAndFilter = () => {
 
 const createResults = async () => {
     let token = await getAccessToken();
-    console.log(token,typeof(token));
     if (!token) return;
     if (curr_view !== "results") return;
+    flights = [];
     await getFlights(token, from_place.value, to_place.value, date.value);
     if (curr_view !== "results") return;
     EXR = await getExchangeRate();
@@ -298,6 +322,7 @@ const updatePrice = async (token) => {
             if(formatTime(flights[j].itineraries[0].segments[stops].arrival.at)==saved_Flights[i].arrival_time &&
             formatTime(flights[j].itineraries[0].segments[0].departure.at) == saved_Flights[i].departure_time){
                 EXR = await getExchangeRate();
+                saved_Flights[i].lowest_price = Math.min(saved_Flights[i].price,toINR(flights[j].price.grandTotal));
                 saved_Flights[i].price = toINR(flights[j].price.grandTotal);
             }
         }
@@ -337,9 +362,9 @@ const formatMyFlight = async (ele,data) =>{
     ele.innerHTML = html;
 };
 
-const renderMyFlights = () => {
+const renderMyFlights = (flights) => {
     my_flights.innerHTML = "";
-    saved_Flights.forEach((flight,index)=>{
+    flights.forEach((flight,index)=>{
         let my_flight = document.createElement("div");
         my_flight.classList.add("myFlight");
         formatMyFlight(my_flight,flight);
@@ -370,6 +395,7 @@ const renderMyFlights = () => {
         my_flights.appendChild(my_flight);
     })
 };
+
 const createWatchlist = async () => {
     my_flights.innerHTML = "";
     if(saved_Flights.length==0) showNoWatchlist();
@@ -383,7 +409,83 @@ const createWatchlist = async () => {
         renderMyFlights(saved_Flights);
     }
 }
+const formatPastFlight = (ele,data) => {
+    let html = `<img src="https://content.airhex.com/content/logos/airlines_${data.airline}_60_40_r.png" alt="Airline" class="airline_logo">
 
+            <div class="departure">
+                <p class="departure_time">${data.departure_time}</p>
+                <p class="departure_airport">${data.departure_airport}</p>
+            </div>
+
+            <div class="inbetween">
+                <p class="flight_length">${data.flight_length}</p>
+                <img src="icons/arrow_ic.png" alt="Arrow_Icon" class="inbetween_icon" >
+                <p class="flight_type"> Stops : ${data.stops}</p>
+            </div>
+
+            <div class="arrival">
+                <p class="arrival_time">${data.arrival_time}</p>
+                <p class="arrival_airport">${data.arrival_airport}</p>
+            </div>
+
+            <div class="edit_sec">
+
+                <div class="price">
+                    <p class="history_last_price">Current Price:Rs.${data.price}</p>
+
+                    <p class="history_your_price">Picked Price: Rs.${data.picked_price}</p>
+
+                    <p class="history_lowest_price">Picked Price: Rs.${data.lowest_price}</p>
+                </div>
+            </div>
+            <button class="delete_btns">Delete</button>`;
+    ele.innerHTML = html;
+};
+const renderPastFlights = (flights) => {
+    past_flights_sec.innerHTML = "";
+    flights.forEach((flight,index)=>{
+        let past_flight = document.createElement("div");
+        past_flight.classList.add("pastFlight");
+        formatPastFlight(past_flight,flight);
+        past_flight.addEventListener("click",()=>{
+            curr_idx = index;
+            delete_sec.classList.remove("hidden");
+            backdrop.classList.remove("hidden");
+            delete_sec.classList.add("delete");
+            let parent = document.querySelector("#history_last_price");
+            let html = `<p>Current Lowest Price<p>
+                        <p id="watchlist_current_lowest_price">Rs.${flight.price}</p>`;
+            parent.innerHTML = html;
+            picked_price = flight.picked_price;
+            parent = document.querySelector("#history_your_price");
+            html = `<p >Your Picked Price</p>
+            <p id="curr_picked_price">Rs.${picked_price}</p>`;
+            parent.innerHTML = html;
+            parent = document.querySelector("#history_lowest_price");
+            html = `<p>Current Lowest Price<p>
+                        <p id="watchlist_current_lowest_price">Rs.${flight.lowest_price}</p>`;
+            parent.innerHTML = html;
+            document.querySelector("#h_modal_logo").src = `https://content.airhex.com/content/logos/airlines_${flight.airline}_60_40_r.png`;
+            document.querySelector("#h_modal_dep_airport").innerText = flight.departure_airport;
+            document.querySelector("#h_modal_arr_airport").innerText = flight.arrival_airport;
+            document.querySelector("#h_modal_dep_time").innerText = flight.departure_time;
+            document.querySelector("#h_modal_arr_time").innerText = flight.arrival_time;
+            document.querySelector("#h_modal_flight_len").innerText = flight.flight_length;
+            document.querySelector("#h_modal_flight_type").innerText = `Stops : ${flight.stops}`;
+            document.querySelector("#h_modal_date").innerText = flight.datel;
+        });
+        past_flights.appendChild(past_flight);
+    })
+};
+
+const createHistory = () => {
+    past_loader.classList.add("hidden");
+    past_loader.classList.remove("past_loader")
+    if(past_flights.length==0) showNoPast();
+    else{
+        renderPastFlights(past_flights);
+    }
+};
 const homeToResults = async() => {
     from_place.classList.remove("invalid_input");
     to_place.classList.remove("invalid_input");
@@ -441,13 +543,14 @@ const toHome = () => {
     no_response.classList.remove("no_results");
     backdrop.classList.add("hidden");
     no_response.classList.add("hidden");
+    history_sec.classList.add("hidden");
+    history_sec.classList.remove("history_sec");
     prev_view = curr_view;
     curr_view = "home";
 };
 
 const toWatchlist = async () => {
-    watchList.classList.remove("hidden");
-    results.classList.add("hidden");
+    my_flights.innerHTML = "";
     header.classList.remove("searching");
     header.classList.add("hidden");
     result_loader.classList.add("hidden");
@@ -460,9 +563,37 @@ const toWatchlist = async () => {
     no_results.classList.add("hidden");
     no_results.classList.remove("no_results");
     backdrop.classList.add("hidden");
+    history_sec.classList.add("hidden");
+    history_sec.classList.remove("history_sec");
+    watchList.classList.remove("hidden");
+    results.classList.add("hidden");
+    no_past_flights.classList.add("hidden");
+    no_past_flights.classList.remove("no_results");
+    if(curr_view!="watchlist"){
+        prev_view = curr_view;
+        curr_view = "watchlist";
+    }
+    await createWatchlist();
+};
+
+const toHistory = async () => {
+    history_sec.classList.remove("hidden");
+    history_sec.classList.add("history_sec");
+    watchList.classList.add("hidden");
+    no_watchlisted_flights.classList.add("hidden");
+    no_watchlisted_flights.classList.remove("no_results");
+    backdrop.classList.add("hidden");
+    watchlist_loader.classList.add("hidden");
+    watchlist_loader.classList.remove("watchlist_loader");
+    past_loader.classList.remove("hidden");
+    past_loader.classList.add("past_loader")
+    no_results.classList.add("hidden");
+    no_results.classList.remove("no_results");
+    backdrop.classList.add("hidden");
+
     prev_view = curr_view;
-    curr_view = "watchlist";
-    createWatchlist();
+    curr_view = "history";
+    setTimeout(createHistory,100);
 };
 
 const back = () =>{
@@ -470,6 +601,8 @@ const back = () =>{
         case "home": toHome();
             break;
         case "results": homeToResults();
+            break;
+        case "watchlist" : toWatchlist();
             break;
         default : toHome();
     };
@@ -530,5 +663,13 @@ no_results_btn.addEventListener("click",()=>{
 });
 no_watchlisted_flights_btn.addEventListener("click",back);
 no_response_btn.addEventListener("click",toHome);
+no_past_flights_btn.addEventListener("click",back);
+home_btn.forEach((btn)=>{
+    btn.addEventListener("click",toHome);
+});
 heading.addEventListener("click",toHome);
-back_btn.addEventListener("click",back);
+history_btn.addEventListener("click",toHistory);
+watchList_title.addEventListener("click",toWatchlist);
+back_btn.forEach((btn)=>{
+    btn.addEventListener("click",back);
+});
