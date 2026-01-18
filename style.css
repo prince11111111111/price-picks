@@ -146,14 +146,14 @@ header.searching #flight_details{
     text-transform: uppercase;
     letter-spacing: 2px;
 }
-#flight_cards, #results{
+#flight_cards, #results, #past_flights{
     display: flex;
     flex-direction: column;
     width: 100%;
     justify-content: center;
     align-items: center;
 }
-.result{
+.result, .past_flight{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -191,7 +191,14 @@ header.searching #flight_details{
     width:80%;
     height: 20vh;
 }
-.myFlight .arrival,.myFlight .departure,.myFlight .inbetween{
+.past_flight .arrival,.past_flight .departure,.past_flight .inbetween{
+    width: 10%;
+}
+.delete_btns{
+    margin: 2vmin;
+    font-size: 2rem;
+    border: none;
+    border-radius: 1vmin;
     width: 15%;
 }
 .airline_logo{
@@ -338,6 +345,14 @@ header.searching #flight_details{
     justify-content: space-between;
     align-items: center;
 }
+.delete{
+    width: 80%;
+    height: 60vh;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
 #update{
     width: 100%;
     height: 25vh;
@@ -350,12 +365,53 @@ header.searching #flight_details{
     font-size: 1.5rem;
     font-weight: bolder;
 }
+.delete .modal_ticket{
+    height: 19.5vh;
+}
+.delete .prices{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.5rem;
+    width: 100%;
+    height: 19.5vh;
+    background-color: #7692FF;
+    border-radius: 1vmin;
+}
+#delete_box{
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    line-height: 0;
+    flex-direction: column;
+    font-size: 1.5rem;
+    width: 30%;
+    height: 19.5vh;
+    background-color: #7692FF;
+    border-radius: 1vmin;
+}
+#delete_box span{
+    height: 60%;
+}
+#delete_box_btn{
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    height: 40%;
+}
+#delete_box_btn button{
+    font-size: 1.5rem;
+    width: 40%;
+    margin: 1vmin;
+    border-radius: 1vmin;
+    cursor: pointer;
+    border: none;
+}
 .prices{
     display: flex;
     justify-content: space-around;
     font-size: 1.5rem;
-    width: 100%;
-    
+    width: 100%; 
 }
 .prices #watchlist_current_price, .prices #watchlist_your_price, #new_price{
     display: flex;
@@ -392,7 +448,7 @@ header.searching #flight_details{
 .hidden{
     display: none;
 }
-#pick_price, #edit {
+#pick_price, #edit , #delete{
     position: fixed;
     top: 50%;
     left: 50%;
@@ -427,7 +483,7 @@ header.searching #flight_details{
     gap:3vmin;
     align-items: center;
 }
-.no_results{
+.no_results,.delete_all_box{
     position: fixed;
     top:37%;
     left: 44.5%;
