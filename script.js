@@ -255,7 +255,7 @@ const renderFlights = (flightList) => {
 
             document.querySelector("#picked_price").value = "";
             curr_price = toINR(flight.price.grandTotal);
-            document.querySelector("#results_current_price").innerHTML = `<p>Current Lowest Price</p><p id="results_current_lowest_price">${curr_price}</p>`;
+            document.querySelector("#results_current_price").innerHTML = `<p>Current Lowest Price</p><p id="results_current_lowest_price">Rs. ${curr_price}</p>`;
 
             pick.classList.remove("hidden");
             pick.classList.add("pick");
@@ -359,7 +359,7 @@ const formatMyFlight = async (ele,data) =>{
             <div class="edit_sec">
 
                 <div class="price">
-                    <p class="lowest_price">Current Price:Rs.${data.price}</p>
+                    <p class="lowest_price">Current Price: Rs.${data.price}</p>
 
                     <p class="picked_price">Picked Price: Rs.${data.picked_price}</p>
                 </div>
@@ -434,16 +434,12 @@ const formatPastFlight = (ele,data) => {
                 <p class="arrival_time">${data.arrival_time}</p>
                 <p class="arrival_airport">${data.arrival_airport}</p>
             </div>
-
-            <div class="edit_sec">
-
-                <div class="price">
-                    <p class="history_last_price">Current Price:Rs.${data.price}</p>
+            <div class="price">
+                    <p class="history_last_price">Current Price: Rs.${data.price}</p>
 
                     <p class="history_your_price">Picked Price: Rs.${data.picked_price}</p>
 
                     <p class="history_lowest_price">Lowest Price: Rs.${data.lowest_price}</p>
-                </div>
             </div>
             <button class="delete_btns">Delete</button>`;
     ele.innerHTML = html;
@@ -679,12 +675,12 @@ history_delete_btn.addEventListener("click",()=>{
 delete_all.addEventListener("click",()=>{
     delete_all_box.classList.remove("hidden");
     backdrop.classList.remove("hidden");
-    delete_all_box.classList.add("delete_all_box");
+    delete_all_box.classList.add("delete_all");
 });
 delete_all_cancel.addEventListener("click",()=>{
     delete_all_box.classList.add("hidden");
     backdrop.classList.add("hidden");
-    delete_all_box.classList.remove("delete_all_box");
+    delete_all_box.classList.remove("delete_all");
 });
 delete_all_btn.addEventListener("click",()=>{
     past_flights.splice(0,past_flights.length);
@@ -692,7 +688,7 @@ delete_all_btn.addEventListener("click",()=>{
     if(past_flights.length==0) showNoPast();
     renderPastFlights(past_flights);
     delete_all_box.classList.add("hidden");
-    delete_all_box.classList.remove("delete_all_box");
+    delete_all_box.classList.remove("delete_all");
     localStorage.setItem("flight_history", JSON.stringify(past_flights));
 });
 sort_type.addEventListener("change", sortAndFilter);
