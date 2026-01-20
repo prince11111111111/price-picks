@@ -1,3 +1,14 @@
+/*
+  PRICE PICKS STYLESHEET
+  ----------------------
+  1. Global Resets & Typography
+  2. Home Page (Search)
+  3. Results Page (Flight Cards)
+  4. Watchlist Section
+  5. History Section (Modals)
+  6. Animations (Loaders)
+  7. Mobile Media Queries
+*/
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 *{
     margin: 0%;
@@ -17,10 +28,6 @@
 body{
     background-color: #ABD2FA;  
 }
-.cross{
-    height: 75px;
-    width: 75px;
-}
 img{
     height: 47px;
     width: 47px;
@@ -34,61 +41,12 @@ header{
     min-height: 100vh;
     transition: min-height 0.7s ease, padding 0.7s ease;
 }
-header.searching{
-    min-height: 10vh;
-    justify-content: flex-start;
-}
-header.searching #search_sec{
-    height: 10vmin;
-    margin:1.5vmin;
-    padding:5px;
-    flex-direction: row;
-    width: 100%;
-    justify-content: left;
-    gap:0rem;
-    border-radius:0.5vmin;
-}
-header.searching #flight_details label{
-    font-size: 1rem;
-    font-weight: bolder;
-}
-header.searching #flight_details input{
-    font-size: 1rem;
-    padding: 1vh;
-}
-header.searching #search_btn{
-    height: 5vmin;
-    width: 15%;
-    border: none;
-    border-radius: 1vmin;
-    margin:0.1rem;
-    font-size: 1rem;
-    font-weight: bolder;
-}
-header.searching #flight_details{
-    width: 50%;
-    justify-content: space-evenly;
-    padding: 0 2vh 0 2vh;
+h1,h2{
+    cursor: pointer;
+    line-height: normal;
 }
 
-.sortandfilter{
-    width: 35%;
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    gap: 1vmin;
-}
-.sortandfilter label{
-    font-size: 0.7rem;
-    font-weight: bolder;
-}
-.sortandfilter select{
-    font-size: 0.7rem;
-    padding: 1vh;
-    border: none;
-    border-radius: 1vmin;
-    cursor: pointer;
-}
+/* home page */
 #search_sec{
     width: 80%;
     padding: 5vmin;
@@ -100,7 +58,6 @@ header.searching #flight_details{
     border-radius: 1vmin;
     gap: 2vmin;
     margin: auto;
-    
 }
 #flight_details{
     display: flex;
@@ -120,6 +77,11 @@ header.searching #flight_details{
     border: none;
     width: 100%;
 }
+#flight_details input.invalid_input, #new_picked_price.invalid_input {
+    border: 3px;
+    border-style: solid;
+    border-color: #ee5253;
+}
 #search_btn{
     height: 100px;
     width: 300px;
@@ -136,6 +98,62 @@ header.searching #flight_details{
     display: flex;
     justify-content: space-between;
 }
+
+/* result section */
+header.searching{
+    min-height: 10vh;
+    justify-content: flex-start;
+}
+header.searching #search_sec{
+    height: 10vmin;
+    margin:1.5vmin;
+    padding:5px;
+    flex-direction: row;
+    width: 100%;
+    justify-content: left;
+    gap:0rem;
+    border-radius:0.5vmin;
+}
+header.searching #flight_details{
+    width: 50%;
+    justify-content: space-evenly;
+    padding: 0 2vh 0 2vh;
+}
+header.searching #flight_details label{
+    font-size: 1rem;
+    font-weight: bolder;
+}
+header.searching #flight_details input{
+    font-size: 1rem;
+    padding: 1vh;
+}
+header.searching #search_btn{
+    height: 5vmin;
+    width: 15%;
+    border: none;
+    border-radius: 1vmin;
+    margin:0.1rem;
+    font-size: 1rem;
+    font-weight: bolder;
+}
+.sortandfilter{
+    width: 35%;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 1vmin;
+}
+.sortandfilter label{
+    font-size: 0.7rem;
+    font-weight: bolder;
+}
+.sortandfilter select{
+    font-size: 0.7rem;
+    padding: 1vh;
+    border: none;
+    border-radius: 1vmin;
+    cursor: pointer;
+}
 .loading_state {
     display: flex;
     justify-content: center;
@@ -146,6 +164,22 @@ header.searching #flight_details{
     color: #091540;
     text-transform: uppercase;
     letter-spacing: 2px;
+}
+#watchlist_loader,#result_loader, #past_loader{
+    margin-top: 8%;
+    width: 100%;
+}
+.result_loader, .watchlist_loader, .past_loader {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+.result_loader_content, .watchlist_loader_content, .past_loader_content{
+    width: 100%;
 }
 #flight_cards, #results, #past_flights{
     display: flex;
@@ -163,54 +197,11 @@ header.searching #flight_details{
     border-radius: 1vmin;
     width:80%;
 }
-.past_flight{
-    background-color: rgba(166, 184, 255, 1);
-}
-#watchlist_header, #history_header{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: larger;
-}
-#delete_all{
-    height: 2.5vmax;
-    width: 5vmax;
-    border: none;
-    border-radius: 1vmin;
-}
-#my_flights{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-}
-.myFlight{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #A6B8FF;
-    margin-top: 4vh;
-    border-radius: 15px;
-    width:80%;
-    height: 20vh;
-}
-.past_flight .arrival,.past_flight .departure,.past_flight .inbetween{
-    width: 10%;
-}
-.delete_btns{
-    margin: 2vmin;
-    font-size: 2rem;
-    border: none;
-    border-radius: 1vmin;
-    width: 15%;
-}
 .airline_logo{
     margin: 2vmin;
     align-self: center;
     width: 15%;
 }
-
 .departure , .arrival{
     width: 15%;
     display: flex;
@@ -228,7 +219,6 @@ header.searching #flight_details{
     font-weight: bold;
     justify-content: center;
     align-items: center;
-    text-align: center;
     flex-direction: column;
 }
 .inbetween_icon,  .modal_inbtw_icon{
@@ -245,31 +235,9 @@ header.searching #flight_details{
     flex-direction: column;
     padding: 1rem;
 }
-.edit_sec,.price_sec{
-    width: 30%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-}
-.edit_sec .price{
-    width: 100%;
-}
 .pick_btn{
     width: 100%;
     border-radius: 1vmin;
-    font-size: 1.5rem;
-    border: 0;
-    cursor: pointer;
-}
-.edit_btns{
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    border-radius: 1vmin;
-    width: 90%;
-    height: 30%;
     font-size: 1.5rem;
     border: 0;
     cursor: pointer;
@@ -281,6 +249,14 @@ header.searching #flight_details{
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+}
+#pick_price, #edit , #delete{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 1000;
 }
 .modal_ticket{
     width: 70%;
@@ -311,12 +287,25 @@ header.searching #flight_details{
     font-size: 1.5rem;
     font-weight: bolder;
 }
+.close{
+    width: 25px;
+    height: 25px;
+    justify-content: center;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+    background-color: #7692FF;
+    border-radius: 50%;
+}
 #results_current_price{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
     height: 100%;
     width: 33%;
 }
@@ -344,6 +333,108 @@ header.searching #flight_details{
     width: 25%;
     height: 10vh;
 }
+.no_results,.delete_all_box{
+    position: fixed;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    border-radius: 15px;
+    border-style: solid ;
+    border-width: 2px;
+    border-color: #091540;
+    background-color: #7692FF;
+    z-index: 1000;
+}
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+.cross{
+    height: 75px;
+    width: 75px;
+}
+#no_results_btn, #no_watchlisted_flights_btn, #no_response_btn, #no_past_flights_btn{
+    height: 20%;
+    width: 40%;
+    font-size: 1.2rem;
+    border-radius: 1vmin;
+    cursor: pointer;
+}
+
+/* watchlist section */
+#watchlist_header, #history_header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: larger;
+}
+.watchlist_btn, .history_btn{
+    display: flex;
+    justify-content: space-between;
+    gap:3vmin;
+    align-items: center;
+}
+#my_flights{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.myFlight{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #A6B8FF;
+    margin-top: 4vh;
+    border-radius: 15px;
+    width:80%;
+    height: 20vh;
+}
+.green{
+    background-color: forestgreen;
+    background: linear-gradient(45deg, #2ecc71, #27ae60) !important;
+    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+    border: none;
+}
+.red{
+    background-color: crimson;
+    background: linear-gradient(45deg, #ff6b6b, #ee5253) !important;
+    box-shadow: 0 8px 20px rgba(238, 82, 83, 0.4);
+    border: none;
+}.edit_sec,.price_sec{
+    width: 30%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+.edit_sec .price{
+    width: 100%;
+}
+.edit_btns{
+    justify-content: center;
+    align-items: center;
+    border-radius: 1vmin;
+    width: 90%;
+    height: 30%;
+    font-size: 1.5rem;
+    border: 0;
+    cursor: pointer;
+}
 .edit{
     width: 80%;
     height: 45vh;
@@ -351,32 +442,6 @@ header.searching #flight_details{
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-}
-.delete{
-    width: 80%;
-    height: 60vh;
-    display:flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-}
-.delete_all{
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    width: 30%;
-    height: 19.5vh;
-    background-color: #7692FF;
-    border-radius: 1vmin;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    text-align: center;
-    font-size: 1.5rem;
 }
 #update{
     width: 100%;
@@ -389,48 +454,6 @@ header.searching #flight_details{
     border-radius: 1vmin;
     font-size: 1.5rem;
     font-weight: bolder;
-}
-.delete .modal_ticket{
-    height: 19.5vh;
-}
-.delete .prices{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    font-size: 1.5rem;
-    width: 100%;
-    height: 19.5vh;
-    background-color: #7692FF;
-    border-radius: 1vmin;
-}
-#delete_box{
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
-    line-height: 0;
-    flex-direction: column;
-    font-size: 1.5rem;
-    width: 30%;
-    height: 19.5vh;
-    background-color: #7692FF;
-    border-radius: 1vmin;
-}
-#delete_box span,#delete_all_box span{
-    height: 60%;
-}
-#delete_box_btn,#delete_all_box_btn{
-    display: flex;
-    width: 100%;
-    justify-content: space-evenly;
-    height: 40%;
-}
-#delete_box_btn button,#delete_all_box_btn button{
-    font-size: 1.5rem;
-    width: 40%;
-    margin: 1vmin;
-    border-radius: 1vmin;
-    cursor: pointer;
-    border: none;
 }
 .prices{
     display: flex;
@@ -470,118 +493,95 @@ header.searching #flight_details{
     font-size: 1rem;
     cursor: pointer;
 }
-.hidden{
-    display: none;
+
+/* history section */
+#delete_all{
+    height: 2.5vmax;
+    width: 5vmax;
+    border: none;
+    border-radius: 1vmin;
 }
-#pick_price, #edit , #delete{
+.past_flight{
+    background-color: rgba(166, 184, 255, 1);
+}
+.past_flight .arrival,.past_flight .departure,.past_flight .inbetween{
+    width: 10%;
+}
+.delete_btns{
+    margin: 2vmin;
+    font-size: 2rem;
+    border: none;
+    border-radius: 1vmin;
+    width: 15%;
+}
+.delete{
+    width: 80%;
+    height: 60vh;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.delete .modal_ticket{
+    height: 19.5vh;
+}
+.delete .prices{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.5rem;
+    width: 100%;
+    height: 19.5vh;
+    background-color: #7692FF;
+    border-radius: 1vmin;
+}
+#delete_box{
+    display: flex;
+    justify-content: space-around;
+    line-height: 0;
+    flex-direction: column;
+    font-size: 1.5rem;
+    width: 30%;
+    height: 19.5vh;
+    background-color: #7692FF;
+    border-radius: 1vmin;
+}
+#delete_box span,#delete_all_box span{
+    height: 60%;
+}
+#delete_box_btn,#delete_all_box_btn{
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    height: 40%;
+}
+#delete_box_btn button,#delete_all_box_btn button{
+    font-size: 1.5rem;
+    width: 40%;
+    margin: 1vmin;
+    border-radius: 1vmin;
+    cursor: pointer;
+    border: none;
+}
+.delete_all{
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transform: translate(-50%, -50%);
     z-index: 1000;
-}
-.green{
-    background-color: forestgreen;
-    background: linear-gradient(45deg, #2ecc71, #27ae60) !important;
-    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
-    border: none;
-}
-.red{
-    background-color: crimson;
-    background: linear-gradient(45deg, #ff6b6b, #ee5253) !important;
-    box-shadow: 0 8px 20px rgba(238, 82, 83, 0.4);
-    border: none;
-}
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-}
-.watchlist_btn, .history_btn{
-    display: flex;
-    justify-content: space-between;
-    gap:3vmin;
-    align-items: center;
-}
-.no_results,.delete_all_box{
-    position: fixed;
-    top:37%;
-    left: 44.5%;
-    width: 200px;
-    height: 200px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    width: 30%;
+    height: 19.5vh;
+    background-color: #7692FF;
+    border-radius: 1vmin;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    font-size: 1rem;
-    border-radius: 15px;
-    border-style: solid ;
-    border-width: 2px;
-    border-color: #091540;
-    background-color: #7692FF;
-    z-index: 1000;
-}
-.no_results span{
-    text-align: center;
-}
-#no_results_btn, #no_watchlisted_flights_btn, #no_response_btn, #no_past_flights_btn{
-    height: 20%;
-    width: 40%;
-    font-size: 1.2rem;
-    text-align: center;
-    border-radius: 1vmin;
-    cursor: pointer;
-}
-#flight_details input.invalid_input, #new_picked_price.invalid_input {
-    border: 3px;
-    border-style: solid;
-    border-color: #ee5253;
-}
-h1,h2{
-    cursor: pointer;
-    line-height: normal;
-}
-.close{
-    width: 25px;
-    height: 25px;
-    justify-content: center;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 1001;
-    background-color: #7692FF;
-    border-radius: 50%;
-}
-#cross_icon {
-    width: 25px;
-    height: 25px;
-}
-#watchlist_loader,#result_loader, #past_loader{
-    margin-top: 8%;
-    width: 100%;
-}
-.result_loader, .watchlist_loader, .past_loader {
-    width: 100%;
-    height: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-}
-.result_loader_content, .watchlist_loader_content, .past_loader_content{
-    text-align: center;
-    width: 100%;
+    font-size: 1.5rem;
 }
 
+/* animations */
 #flying_plane {
     width: 100px; 
     position: relative;
@@ -604,6 +604,9 @@ h1,h2{
     font-size: 1.2rem;
     font-weight: bold;
     margin-top: 20px;
+}
+.dots {
+    animation: blink 1.5s infinite both;
 }
 @keyframes flyAcross {
     0% {
@@ -655,18 +658,19 @@ h1,h2{
         opacity: 0;
     }
 }
-.dots {
-    animation: blink 1.5s infinite both;
-}
 @keyframes blink {
     0% { opacity: 0.2; }
-    20% { opacity: 1; }
+    50% { opacity: 1; }
     100% { opacity: 0.2; }
 }
+
+/* mobile section */
 @media (max-width: 600px) {
     header{
         height: 100%;
-    }  
+    }
+
+    /* home page */
     #search_sec{
         width: 80%;
         padding: 3%;
@@ -682,17 +686,18 @@ h1,h2{
     #flight_details label{
         font-size: 1.5rem;
     }
-    #date {
-        width: 100%;
-        display: block;
-    }
     #search_btn{
         margin: 0;
         padding: 0;
         width: 100%;
         font-size: 2rem;
         cursor: pointer;
-    }  
+    }
+
+    /* result section */
+    .loading_state {
+        font-size: 2rem;
+    }
     header.searching #search_sec{
         margin: 4vmin;
         justify-content: center;
@@ -739,25 +744,13 @@ h1,h2{
         height: 13vh;
         width:95%;
     }
-    .myFlight{
-        height: 15vh;
-        width: 98%;
-        text-align: center;
-    }
-    .myFlight .departure,.myFlight .arrival,.myFlight .inbetween{
-        width: 16%;
-        font-size: 0.7rem;
+    .airline_logo{
+        width: 55px;
+        height: 50%;
     }
     .departure,.arrival,.price,.pick_btn{
         font-size: 1rem;
         padding: 0.5rem;
-    }
-    .price{
-        height: 75%;
-        width: 30%;
-    }
-    .lowest_price,.picked_price{
-        line-height: 4vmin;
     }
     .inbetween{
         display: inline-flex;
@@ -768,9 +761,9 @@ h1,h2{
         width: 55px;
         height: 24px;
     }
-    .airline_logo{
-        width: 55px;
-        height: 50%;
+    .price{
+        height: 75%;
+        width: 30%;
     }
     #pick_price{
         width: 95%;
@@ -780,21 +773,16 @@ h1,h2{
     .modal_ticket{
         height: 15vh;
         width: 100%;
-    }
-    #select_price{
-        height:20vh
-    }
-    .modal_ticket {
         font-size: 0.7rem;
+    }
+    .modal_ticket .airline_logo{
+        width: 15%;
     }
     .modal_ticket .arrival,.modal_ticket .departure,.modal_ticket .inbetween{
         width: 15%;
     }
-    #h_modal_date{
-        width: 40%;
-    }
-    .modal_ticket .airline_logo{
-        width: 15%;
+    #select_price{
+        height:20vh
     }
     #results_current_price,#results_your_price{
         font-size: 1rem;
@@ -805,14 +793,25 @@ h1,h2{
         font-size: 1rem;
         width: 100%;
     }
-    .edit_sec{
-        width: 35%;
-        align-items: center;
-        justify-content: center;
+
+    /* watchlist section */
+    .myFlight{
+        height: 15vh;
+        width: 98%;
+    }
+    .myFlight .departure,.myFlight .arrival,.myFlight .inbetween{
+        width: 16%;
+        font-size: 0.7rem;
     }
     .lowest_price,.picked_price{
         font-size: 0.7rem;
         height: 50%;
+        line-height: 4vmin;
+    }
+    .edit_sec{
+        width: 35%;
+        align-items: center;
+        justify-content: center;
     }
     .edit_btns{
         font-size: 1rem;
@@ -824,11 +823,11 @@ h1,h2{
         height: 36vh;
         width: 98%;
     }
+    .edit .prices{
+        height: 90%;
+    }
     #update{
         height: 20vh;
-    }
-    .edit .prices{
-        height: 80%;
     }
     .prices{
         font-size: 1rem; 
@@ -854,9 +853,8 @@ h1,h2{
         width: 45%;
         font-size: 1rem;
     }
-    .loading_state {
-        font-size: 2rem;
-    }
+
+    /* history section */
     .history_btn{
         gap:0;
     }
@@ -877,6 +875,9 @@ h1,h2{
         width: 13%;
         font-size: 0.6rem;
     }
+    .past_flight .price{
+        height: 100%;
+    }
     .history_last_price, .history_your_price, .history_lowest_price{
         font-size: 0.6rem;
         line-height: 2.5vmin;
@@ -884,10 +885,6 @@ h1,h2{
         height: 33%;
         width: 100%;
         justify-self: center;
-    }
-    #history_last_price,#history_your_price,#history_lowest_price{
-        font-size: 1rem;
-        font-weight: bolder;
     }
     .delete_btns{
         width: 20%;
@@ -900,6 +897,13 @@ h1,h2{
     .delete .prices,.delete .modal_ticket{
         height: 13vh;
     }
+    #h_modal_date{
+        width: 40%;
+    }
+    #history_last_price,#history_your_price,#history_lowest_price{
+        font-size: 1rem;
+        font-weight: bolder;
+    }
     #delete_box{
         height: 15vh;
         width: 70%;
@@ -911,8 +915,5 @@ h1,h2{
     .delete_all{
         height: 20vh;
         width: 80%;
-    }
-    .past_flight .price{
-        height: 100%;
     }
 }
