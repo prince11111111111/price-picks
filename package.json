@@ -1,0 +1,30 @@
+{
+  "name": "price-picks",
+  "version": "1.0.0",
+  "description": "A smart flight tracking dashboard that lets users search real-time availability and 'pick' their target price. Built to monitor flight price fluctuations and notify the user when prices drop to their picked range.",
+  "main": "Airlines.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prince11111111111/price-picks.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prince11111111111/price-picks/issues"
+  },
+  "homepage": "https://github.com/prince11111111111/price-picks#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mongoose": "^9.1.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
