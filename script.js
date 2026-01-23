@@ -673,10 +673,31 @@ pick_btn.addEventListener("click", async () => {
     } else {
         flights_ToSave.picked_price = desired_price;
         flights_ToSave.date = date.value;
-        saved_Flights.push(flights_ToSave);
-        localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
-        pick.classList.add("hidden");
-        backdrop.classList.add("hidden");
+        try {
+            const response = await fetch('http://localhost:3000/api/watchlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(flights_ToSave)
+            });
+
+            if (response.ok) {
+                console.log("Flight successfully sent to Database!");
+                
+                saved_Flights.push(flights_ToSave); 
+                localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
+                pick.classList.remove("pick");
+                pick.classList.add("hidden");
+                backdrop.classList.add("hidden");
+            } else {
+                console.error("Server rejected the flight");
+                alert("Failed to save flight to database.");
+            }
+        } catch (error) {
+            console.error("Network Error:", error);
+            alert("Could not connect to server.");
+        }
     }
 });
 
