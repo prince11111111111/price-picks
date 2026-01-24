@@ -18,9 +18,6 @@
     font-family: 'Roboto', sans-serif;
     text-align: center;
     line-height: 1.5;
-} 
-.hidden{
-    display: none;
 }
 #results.hidden, #watchlist_sec.hidden {
     display: none;
@@ -916,4 +913,9 @@ header.searching #search_btn{
         height: 20vh;
         width: 80%;
     }
+}
+
+ 
+.hidden{
+    display: none !important;
 }

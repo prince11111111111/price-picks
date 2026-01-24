@@ -69,7 +69,22 @@ let flights = [];
 
 let flights_ToSave = null;
 
-let saved_Flights = JSON.parse(localStorage.getItem("my_flights")) || [];
+let saved_Flights = [];
+const fetchSavedFlights = async () => {
+    try {
+        const response = await fetch('http://localhost:3000/api/watchlist');
+        if (!response.ok) throw new Error("Failed to fetch");
+        saved_Flights = await response.json();
+        console.log("Loaded flights from DB:", saved_Flights.length);
+    } catch (error) {
+        console.error("Error loading watchlist:", error);
+    }
+};
+
+(async () => {
+    await fetchSavedFlights();
+})();
+
 let past_flights  = JSON.parse(localStorage.getItem("flight_history")) || [];
 
 let active_flights = saved_Flights.filter(flight => flight.date >= today);
@@ -708,27 +723,63 @@ edit_close_btn.addEventListener("click",()=>{
 });
 
 //button to edit the details of the selected flight
-edit_btn.addEventListener("click",()=>{
-    if(isNaN(parseInt(new_price_input.value)) || parseInt(new_price_input.value)<=0){
-        new_picked_price.classList.add("invalid_input");
-    }else{
-        saved_Flights[curr_idx].picked_price = parseInt(new_price_input.value);
-        edit.classList.add("hidden");
-        localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
-        if(saved_Flights.length==0) showNoWatchlist();
-        renderMyFlights(saved_Flights);
-        backdrop.classList.add("hidden");
-    } 
+edit_btn.addEventListener("click", async ()=>{
+    const newPrice = parseInt(new_price_input.value);
+    const flightId = saved_Flights[curr_idx]._id; // Get DB ID
+
+    if (isNaN(newPrice) || newPrice <= 0) {
+        new_price_input.classList.add("invalid_input");
+    } else {
+        try {
+            const response = await fetch(`http://localhost:3000/api/watchlist/${flightId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ picked_price: newPrice })
+            });
+
+            if (response.ok) {
+                console.log("Price updated in DB");
+                saved_Flights[curr_idx].picked_price = newPrice;
+                renderMyFlights(saved_Flights);
+                edit.classList.add("hidden");
+                backdrop.classList.add("hidden");
+                
+            } else {
+                alert("Failed to update price on server.");
+            }
+        } catch (error) {
+            console.error("Network Error:", error);
+        }
+    }
 });
 
 //button to delete the selected flight from watchlist
-delete_btn.addEventListener("click",()=>{
-    saved_Flights.splice(curr_idx,1);
-    backdrop.classList.add("hidden");
-    if(saved_Flights.length==0) showNoWatchlist();
-    renderMyFlights(saved_Flights);
-    edit.classList.add("hidden");
-    localStorage.setItem("my_flights", JSON.stringify(saved_Flights));
+delete_btn.addEventListener("click", async ()=>{
+    const flightId = saved_Flights[curr_idx]._id;
+
+    if (!flightId) {
+        console.error("No ID found for this flight");
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/watchlist/${flightId}`, {
+            method: 'DELETE',
+        });
+        if (response.ok) {
+            console.log("Flight deleted from DB");
+            saved_Flights.splice(curr_idx, 1);
+            renderMyFlights(saved_Flights);
+            edit.classList.add("hidden");
+            backdrop.classList.add("hidden");
+            if (saved_Flights.length === 0) showNoWatchlist();
+            
+        } else {
+            alert("Failed to delete from server.");
+        }
+    } catch (error) {
+        console.error("Network Error:", error);
+    }
 });
 
 //button to close the delete box inside history section
