@@ -19,9 +19,11 @@
   },
   "homepage": "https://github.com/prince11111111111/price-picks#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.5"
   },
   "devDependencies": {

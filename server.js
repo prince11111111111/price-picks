@@ -3,17 +3,34 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const Flight = require('./models/Flight');
-
+const bcrypt = require('bcryptjs');
+const User = require('./models/User');
 const app = express();
 const PORT = process.env.PORT || 3000;
+const jwt = require('jsonwebtoken');
 
 // MIDDLEWARE (The Gatekeepers)
 app.use(cors()); // Allow your frontend (index.html) to talk to this server
 app.use(express.json()); // Allow the server to read JSON data
+const verifyToken = (req, res, next) => {
+    const token = req.header('Authorization');
+    if (!token) {
+        return res.status(401).json({ message: "Access Denied. No token provided." });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next(); 
+
+    } catch (error) {
+        res.status(400).json({ message: "Invalid Token" });
+    }
+};
 
 // ROUTES 
 
-app.post('/api/watchlist', async (req, res) => {
+app.post('/api/watchlist', verifyToken, async (req, res) => {
     try {
         // req.body contains the JSON sent from the frontend
         const newFlight = new Flight(req.body);
@@ -62,6 +79,58 @@ app.put('/api/watchlist/:id', async (req, res) => {
         res.status(200).json({ message: "Price updated successfully" });
     } catch (error) {
         res.status(500).json({ error: "Failed to update price" });
+    }
+});
+
+app.post('/api/auth/signup', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const existingUser = await User.findOne({email});
+
+        if (existingUser) {
+            return res.status(400).json({ message: "User Already exists" });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = new User({
+            username: req.body.username,
+            email: email,
+            password: hashedPassword 
+        });
+        await newUser.save();
+        res.status(201).json({ message: "User created successfully!" });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({email});
+
+        if (!user) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign(
+            { userId: user._id }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '1h' }
+        );
+
+        res.json({ token, userId: user._id });
+
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
     }
 });
 
