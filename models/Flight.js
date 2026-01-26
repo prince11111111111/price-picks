@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const flightSchema = new mongoose.Schema({
+    user: {type:mongoose.Schema.Types.ObjectId, ref:"User", required:true},
     airline: { type: String, required: true },
     departure_airport: { type: String, required: true },
     arrival_airport: { type: String, required: true },
